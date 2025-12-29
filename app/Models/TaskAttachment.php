@@ -6,5 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class TaskAttachment extends Model
 {
-    protected $table = 'taskattachments';
+    protected $table = 'task_attachments';
+
+    public function task()
+    {
+        return $this->belongsTo(Task::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
