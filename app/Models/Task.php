@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    protected $table = 'tasks';
+    
     protected $fillable = [
         'project_id',
         'department_id',

@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class TaskAttachment extends Model
 {
-    //
+    protected $table = 'taskattachments';
 }
