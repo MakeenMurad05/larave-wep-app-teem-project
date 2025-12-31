@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
     protected $table = 'projects';
-    
+
     protected $fillable = [
         'title',
         'description',
@@ -24,5 +24,10 @@ class Project extends Model
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }
