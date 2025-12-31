@@ -9,6 +9,7 @@ use App\Filament\Resources\Projects\Schemas\ProjectForm;
 use App\Filament\Resources\Projects\Tables\ProjectsTable;
 use App\Models\Project;
 use BackedEnum;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -24,7 +25,13 @@ class ProjectResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return ProjectForm::configure($schema);
+        return $form
+        ->schema([
+            Select::make('department_id')
+                ->relationship('department', 'name') // يفترض وجود علاقة department في موديل Project
+                ->required()
+                ->visible(fn () => auth()->user()->hasRole('Manager') || auth()->user()->hasRole('Admin')),
+        ]);
     }
 
     public static function table(Table $table): Table

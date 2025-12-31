@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Deps\Tables;
+namespace App\Filament\Resources\Departments\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -8,7 +8,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Table;
 
-class DepsTable
+class DepartmentsTable
 {
     public static function configure(Table $table): Table
     {

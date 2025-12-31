@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources\Deps\Schemas;
+namespace App\Filament\Resources\Departments\Schemas;
 
 use Filament\Schemas\Schema;
 
-class DepForm
+class DepartmentInfolist
 {
     public static function configure(Schema $schema): Schema
     {

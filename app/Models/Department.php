@@ -8,8 +8,8 @@ class Department extends Model
 {
     protected $table = 'department';
 
-    public function tasks()
+    public function projects()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Project::class);
     }
 }

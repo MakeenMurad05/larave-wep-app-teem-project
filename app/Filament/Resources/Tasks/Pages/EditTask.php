@@ -18,4 +18,15 @@ class EditTask extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (auth()->user()->hasRole('Member')) {
+            return [
+                'status' => $data['status'],
+            ];
+        }
+
+        return $data;
+    }
 }

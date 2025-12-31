@@ -18,7 +18,7 @@ class RedirectIfNotAuthenticated
     {
         // اسم الـ route لصفحة login
         if (Auth::guest() && $request->routeIs('filament.auth.login') === false) {
-            return redirect()->route('filament.auth.login');
+            return redirect()->route('filament.admin.auth.login');
         }
         return $next($request);
     }

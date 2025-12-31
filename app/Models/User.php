@@ -3,12 +3,15 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable 
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
@@ -19,7 +22,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'user_name',
+        'name',
         'email',
         'password',
         'is_active',
@@ -51,13 +54,18 @@ class User extends Authenticatable
 
     public function getFilamentName(): string
     {
-        return $this->user_name; // بدل 'name'
+        return $this->user_name ?? $this->name; // بدل 'name'
     }
-
 
     public function profile()
     {
         return $this->hasOne(Profile::class);
+    }
+
+    // هذه الدالة ضرورية جداً، لا تحذفها!
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->is_active;
     }
 
     public function projects()
