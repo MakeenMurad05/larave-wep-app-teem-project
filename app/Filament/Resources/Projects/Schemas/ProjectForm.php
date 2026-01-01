@@ -4,30 +4,51 @@ namespace App\Filament\Resources\Projects\Schemas;
 
 use App\Models\Department;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+
 
 class ProjectForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                Select::make('department_id') // 🟢 Select للمجموعة
-                ->label('Department')
-                ->options(Department::all()->pluck('name', 'id')) // الاسم مقابل الـ id
-                ->required(),
-                TextInput::make('title')
-                    ->required(),
-                Textarea::make('description')
-                    ->required()
-                    ->columnSpanFull(),
-                DateTimePicker::make('start_date')
-                    ->required(),
-                DateTimePicker::make('end_date')->after('start_date')
-                    ->required(),
+        return $schema->schema([ 
+            Select::make('department_id')
+            ->label('Department')
+            ->relationship('department', 'name')
+            ->required()
+            ->searchable()
+            ->preload(),
+
+        Select::make('status')
+            ->options([
+                'planning' => 'Planning',
+                'active' => 'Active',
+                'on_hold' => 'On Hold',
+                'completed' => 'Completed',
+                'archived' => 'Archived',
+            ])
+            ->required()
+            ->native(false),
+
+        TextInput::make('title')
+            ->label('Project Title') // غيرنا التسمية هنا لتكون دقيقة
+            ->required()
+            ->maxLength(255),
+
+        Textarea::make('description')
+            ->required()
+            ->columnSpanFull(),
+
+        DateTimePicker::make('start_date')
+            ->required(),
+
+        DateTimePicker::make('end_date')
+            ->after('start_date')
+            ->required(),
             ]);
     }
 }

@@ -28,35 +28,11 @@ class TaskResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'title';
+    protected static bool $shouldRegisterNavigation = false;
 
-    public static function form(Schema $schema): Schema
+    public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
-        return $form->schema([
-            TextInput::make('title')
-                ->required()
-                ->disabled(fn () => auth()->user()->hasRole('Member')), 
-
-            // الحالة: مسموح للجميع تعديلها
-            Select::make('status')
-                ->options([
-                    'pending' => 'Pending',
-                    'in_progress' => 'In Progress',
-                    'completed' => 'Completed',
-                ])
-                ->required(),
-
-            // الوصف: ممنوع تعديله للعضو
-            Textarea::make('description')
-                ->disabled(fn () => auth()->user()->hasRole('Member')),
-                FileUpload::make('attachment') // افترضنا أن اسم العمود في الجدول هو attachment
-                ->label('ملفات المهمة')
-                ->directory('task-files') // المجلد الذي ستخزن فيه الملفات
-                ->visibility('public')
-                ->openable()
-                ->downloadable()
-                // العضو يمكنه الرفع، لكن لا يمكنه حذف الملفات القديمة إلا لو كان مديراً (اختياري)
-                ->deletable(fn () => !auth()->user()->hasRole('Member')),
-        ]);
+        return TaskForm::configure($schema);
     }
     
 
@@ -91,7 +67,7 @@ class TaskResource extends Resource
     {
         $query = parent::getEloquentQuery();
 
-        if (auth()->user()->harRole('Member'))
+        if (auth()->user()->hasRole('Member'))
         {
             return $query->where('assigned_to', auth()->id());
         }
@@ -106,4 +82,10 @@ class TaskResource extends Resource
         }
         return $query;
     }
+
+    public static function canCreate(): bool
+    {
+        return true;
+    }
+
 }

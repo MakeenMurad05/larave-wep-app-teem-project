@@ -12,6 +12,13 @@ class DepartmentPolicy
 {
     use HandlesAuthorization;
     
+    public function before(AuthUser $authUser, $ability)
+    {
+        if ($authUser->hasRole('Admin') || $authUser->hasRole('super_admin')) {
+            return true;
+        }
+    }
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Department');

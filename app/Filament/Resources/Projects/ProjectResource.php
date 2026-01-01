@@ -7,13 +7,13 @@ use App\Filament\Resources\Projects\Pages\EditProject;
 use App\Filament\Resources\Projects\Pages\ListProjects;
 use App\Filament\Resources\Projects\Schemas\ProjectForm;
 use App\Filament\Resources\Projects\Tables\ProjectsTable;
+
 use App\Models\Project;
 use BackedEnum;
-use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+
 
 class ProjectResource extends Resource
 {
@@ -23,15 +23,9 @@ class ProjectResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    public static function form(Schema $schema): Schema
+    public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
-        return $form
-        ->schema([
-            Select::make('department_id')
-                ->relationship('department', 'name') // يفترض وجود علاقة department في موديل Project
-                ->required()
-                ->visible(fn () => auth()->user()->hasRole('Manager') || auth()->user()->hasRole('Admin')),
-        ]);
+        return ProjectForm::configure($schema);
     }
 
     public static function table(Table $table): Table

@@ -8,6 +8,12 @@ class Department extends Model
 {
     protected $table = 'department';
 
+        protected $fillable = [
+        'id',
+        'name',
+        'description',
+    ];
+
     public function projects()
     {
         return $this->hasMany(Project::class);

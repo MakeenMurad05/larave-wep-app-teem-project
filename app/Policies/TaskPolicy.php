@@ -4,14 +4,26 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
+use App\Models\Project;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TaskPolicy
 {
     use HandlesAuthorization;
     
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole('super_admin') || $user->hasRole('Admin')) 
+        {
+            return true;
+        }
+
+        return null; 
+    }
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
@@ -91,4 +103,7 @@ class TaskPolicy
     {
         return $task->assigned_to === $authUser->id || $authUser->hasRole('Manager');
     }
+
+
+
 }
