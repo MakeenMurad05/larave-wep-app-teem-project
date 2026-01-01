@@ -7,10 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     protected $table = 'tasks';
-    
+
     protected $fillable = [
         'project_id',
-        'department_id',
         'title',
         'description',
         'priority',
@@ -33,11 +32,6 @@ class Task extends Model
     public function project()
     {
         return $this->belongsTo(Project::class);
-    }
-
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
     }
 
     public function comments()
