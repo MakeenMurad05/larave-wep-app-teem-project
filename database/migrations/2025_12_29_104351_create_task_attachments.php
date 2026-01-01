@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('file_size');
             $table->foreignId('uploaded_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

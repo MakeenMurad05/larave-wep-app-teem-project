@@ -30,6 +30,13 @@ class UserForm
                     ->options(['Admin' => 'Admin', 'Manager' => 'Manager', 'Member' => 'Member'])
                     ->default('Member')
                     ->required(),
+                Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->searchable()
+                    ->label('Assign Roles')
+                    ->required(),
             ]);
     }
 }

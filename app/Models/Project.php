@@ -12,10 +12,22 @@ class Project extends Model
         'department_id',
         'title',
         'description',
+        'status',
         'start_date',
         'end_date',
         'created_by'
     ];
+
+    const STATUS_PLANNING = 'planning';
+    const STATUS_ACTIVE = 'active';
+    const STATUS_ON_HOLD = 'on_hold';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_ARCHIVED = 'archived';
+
+    public function isActive(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
 
     public function tasks()
     {

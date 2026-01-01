@@ -16,10 +16,13 @@ return new class extends Migration
             $table->foreignId('department_id')->constrained('departments')->cascadeOnDelete();
             $table->string('title');
             $table->text('description');
+            $table->enum('status', ['planning', 'active', 'on_hold', 'completed', 'archived'])
+            ->default('planning');
             $table->dateTime('start_date');
-            $table->dateTime('end_date');
+            $table->dateTime('end_date')->nullable();
             $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

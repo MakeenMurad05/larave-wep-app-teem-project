@@ -12,9 +12,16 @@ class ProjectPolicy
 {
     use HandlesAuthorization;
     
+    public function before(AuthUser $authUser, $ability)
+    {
+        if ($authUser->hasRole('Admin') || $authUser->hasRole('super_admin')) {
+            return true;
+        }
+    }
+
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:Project');
+        return false;
     }
 
     public function view(AuthUser $authUser, Project $project): bool
@@ -24,7 +31,7 @@ class ProjectPolicy
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:Project');
+        return true;
     }
 
     public function update(AuthUser $authUser, Project $project): bool
