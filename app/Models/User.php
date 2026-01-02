@@ -27,6 +27,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'is_active',
         'user_type',
+        'department_id',
     ];
 
     /**
@@ -65,9 +66,27 @@ class User extends Authenticatable implements FilamentUser
     }
 
     // هذه الدالة ضرورية جداً، لا تحذفها!
-    public function canAccessPanel(Panel $panel): bool
+        public function canAccessPanel(Panel $panel): bool
     {
-        return $this->is_active;
+        // 1. Super Admin (via Shield) has access to everything
+        if ($this->hasRole('super_admin')) {
+            return true;
+        }
+
+        // 2. Panel Logic using Shield Roles
+        if ($panel->getId() === 'admin') {
+            return $this->hasRole('admin');
+        }
+
+        if ($panel->getId() === 'manager') {
+            return $this->hasRole('manager');
+        }
+
+        if ($panel->getId() === 'member') {
+            return $this->hasRole('member');
+        }
+
+        return false;
     }
 
     public function projects()
@@ -85,5 +104,9 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(ActivityLog::class, 'causer_id');
     }
 
+    public function department()
+{
+    return $this->belongsTo(Department::class);
+}
    
 }
