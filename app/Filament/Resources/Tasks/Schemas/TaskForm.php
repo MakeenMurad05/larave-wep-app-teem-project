@@ -2,26 +2,27 @@
 
 namespace App\Filament\Resources\Tasks\Schemas;
 
-
-use Filament\Forms\Form;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\DatePicker;
+use App\Models\User;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class TaskForm
 {
-
     public static function configure(Schema $schema): Schema
     {
-            return $schema->schema([
+        return $schema->schema([
+
             TextInput::make('title')
                 ->required()
-                ->disabled(fn () => auth()->user()->hasRole('Member')), 
+                ->disabled(fn () => auth()->user()->hasRole('Member')),
 
-            // الحالة: مسموح للجميع تعديلها
             Select::make('status')
                 ->options([
                     'pending' => 'Pending',
@@ -31,32 +32,58 @@ class TaskForm
                     'completed' => 'Completed',
                 ])
                 ->required(),
-        
-        Select::make('project_id')
-            ->relationship('project', 'title') // هنا تعمل لأن Task ينتمي لـ Project
-            ->required(),
 
-        Select::make('assigned_to') // استخدم اسم العمود في قاعدة البيانات
-            ->relationship('assignedUser', 'name') // استخدم اسم الدالة المعرفة في الموديل
-            ->label('Assign to Member')
-            ->required(),
-            
-        Select::make('priority')
-            ->options(['low' => 'Low', 'medium' => 'Medium', 'high' => 'High']),
+            Select::make('project_id')
+                ->relationship('project', 'title') // Task belongsTo Project
+                ->required(),
 
-            // الوصف: ممنوع تعديله للعضو
+            Select::make('priority')
+                ->options([
+                    'low' => 'Low',
+                    'medium' => 'Medium',
+                    'high' => 'High',
+                ]),
+
             Textarea::make('description')
                 ->disabled(fn () => auth()->user()->hasRole('Member')),
-                FileUpload::make('attachment') // افترضنا أن اسم العمود في الجدول هو attachment
-                ->label('ملفات المهمة')
-                ->directory('task-files') // المجلد الذي ستخزن فيه الملفات
-                ->visibility('public')
-                ->openable()
-                ->downloadable()
-                // العضو يمكنه الرفع، لكن لا يمكنه حذف الملفات القديمة إلا لو كان مديراً (اختياري)
-                ->deletable(fn () => !auth()->user()->hasRole('Member')),
 
-            DatePicker::make('due_date'),
+Repeater::make('attachments')
+    ->relationship()
+    ->label('ملفات المهمة')
+    ->schema([
+        FileUpload::make('file_path')
+            ->directory('task-files')
+            ->visibility('public')
+            ->multiple(false)      // لكل عنصر ملف واحد فقط
+            ->required()           // validation
+            ->dehydrated()         // ⭐ مهم جداً لإرسال القيمة
+            ->storeFileNamesIn('file_name')
+            ->afterStateUpdated(function ($state, callable $set) {
+                // حجم الملف
+                if ($state instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                    $set('file_size', $state->getSize());
+                }
+            }),
+
+        Hidden::make('file_name')
+            ->dehydrateStateUsing(fn ($state, $get) => basename($get('file_path'))),
+
+        Hidden::make('file_size')->default(0),
+        Hidden::make('uploaded_by')->default(fn () => auth()->id()),
+    ])
+    ->addActionLabel('إضافة ملف'),
+
+            DateTimePicker::make('due_date')
+                ->default(now())
+                ->minDate(now()),
+
+            Select::make('assigned_to')
+                ->relationship('assignedUser', 'name')
+                ->searchable()
+                ->preload()
+                ->required(),
+
+            Hidden::make('created_by')->default(auth()->id()),
         ]);
     }
 }

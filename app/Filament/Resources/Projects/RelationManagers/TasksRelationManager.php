@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Projects\RelationManagers;
 
+use App\Models\User;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -11,6 +12,9 @@ use Filament\Actions\DissociateAction;
 use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -25,33 +29,70 @@ class TasksRelationManager extends RelationManager
 
     public function form(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                TextInput::make('title')
-                    ->required(),
-                Textarea::make('description')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Select::make('priority')
-                    ->options(['low' => 'Low', 'medium' => 'Medium', 'high' => 'High'])
-                    ->required(),
-                Select::make('status')
-                    ->options([
-            'pending' => 'Pending',
-            'in_progress' => 'In progress',
-            'review' => 'Review',
-            'blocked' => 'Blocked',
-            'completed' => 'Completed',
-        ])
-                    ->required(),
-                DateTimePicker::make('due_date'),
-                TextInput::make('assigned_to')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('created_by')
-                    ->required()
-                    ->numeric(),
-            ]);
+        return $schema->schema([
+
+            TextInput::make('title')
+                ->required()
+                ->disabled(fn () => auth()->user()->hasRole('Member')),
+
+            Select::make('status')
+                ->options([
+                    'pending' => 'Pending',
+                    'in_progress' => 'In Progress',
+                    'review' => 'Review',
+                    'blocked' => 'Blocked',
+                    'completed' => 'Completed',
+                ])
+                ->required(),
+
+            Select::make('priority')
+                ->options([
+                    'low' => 'Low',
+                    'medium' => 'Medium',
+                    'high' => 'High',
+                ]),
+
+            Textarea::make('description')
+                ->disabled(fn () => auth()->user()->hasRole('Member')),
+
+Repeater::make('attachments')
+    ->relationship()
+    ->label('Task Files')
+    ->schema([
+        FileUpload::make('file_path')
+            ->directory('task-files')
+            ->visibility('public')
+            ->multiple(false)      // لكل عنصر ملف واحد فقط
+            ->required()           // validation
+            ->dehydrated()         // ⭐ مهم جداً لإرسال القيمة
+            ->storeFileNamesIn('file_name')
+            ->afterStateUpdated(function ($state, callable $set) {
+                // حجم الملف
+                if ($state instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                    $set('file_size', $state->getSize());
+                }
+            }),
+
+        Hidden::make('file_name')
+            ->dehydrateStateUsing(fn ($state, $get) => basename($get('file_path'))),
+
+        Hidden::make('file_size')->default(0),
+        Hidden::make('uploaded_by')->default(fn () => auth()->id()),
+    ])
+    ->addActionLabel('Add File'),
+
+            DateTimePicker::make('due_date')
+                ->default(now())
+                ->minDate(now()),
+
+            Select::make('assigned_to')
+                ->relationship('assignedUser', 'name')
+                ->searchable()
+                ->preload()
+                ->required(),
+
+            Hidden::make('created_by')->default(auth()->id()),
+        ]);
     }
 
     public function table(Table $table): Table
@@ -68,11 +109,11 @@ class TasksRelationManager extends RelationManager
                 TextColumn::make('due_date')
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('assigned_to')
-                    ->numeric()
+                TextColumn::make('assignedUser.name')
+                    ->label('assigned_to')
                     ->sortable(),
-                TextColumn::make('created_by')
-                    ->numeric()
+                TextColumn::make('creator.name')
+                    ->label('created_by')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()

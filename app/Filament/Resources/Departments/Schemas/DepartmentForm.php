@@ -14,13 +14,17 @@ class DepartmentForm
             ->components([
                 // حقل الاسم - إلزامي بناءً على الـ Migration
             TextInput::make('name')
-                ->label('اسم القسم')
+                ->label('department name')
                 ->required()
+                ->unique(table: 'department', column: 'name', ignoreRecord: true) // هذا هو السطر المطلوب
+                ->validationMessages([
+                    'unique' => 'هذا القسم موجود مسبقاً، يرجى اختيار اسم آخر.',
+                ])
                 ->maxLength(255),
 
             // حقل الوصف - اختياري (nullable)
             Textarea::make('description')
-                ->label('الوصف')
+                ->label('description')
                 ->rows(5)
                 ->columnSpanFull(), // ليأخذ المساحة كاملة بالعرض
             ]);

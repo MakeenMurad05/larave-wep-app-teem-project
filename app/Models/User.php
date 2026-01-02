@@ -65,25 +65,26 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Profile::class);
     }
 
-    // هذه الدالة ضرورية جداً، لا تحذفها!
-        public function canAccessPanel(Panel $panel): bool
+    public function canAccessPanel(Panel $panel): bool
     {
-        // 1. Super Admin (via Shield) has access to everything
+    // 1. الأدمن له صلاحية دخول كل اللوحات
         if ($this->hasRole('super_admin')) {
             return true;
         }
 
-        // 2. Panel Logic using Shield Roles
-        if ($panel->getId() === 'admin') {
-            return $this->hasRole('admin');
+        // 2. التحقق من اللوحة (تحويل المعرف لأحرف صغيرة لتجنب الأخطاء)
+        $panelId = strtolower($panel->getId());
+
+        if ($panelId === 'admin') {
+            return $this->hasRole('Admin');
         }
 
-        if ($panel->getId() === 'manager') {
-            return $this->hasRole('manager');
+        if ($panelId === 'manager') {
+            return $this->hasRole('Manager');
         }
 
-        if ($panel->getId() === 'member') {
-            return $this->hasRole('member');
+        if ($panelId === 'member') {
+            return $this->hasRole('Member');
         }
 
         return false;
@@ -105,8 +106,8 @@ class User extends Authenticatable implements FilamentUser
     }
 
     public function department()
-{
-    return $this->belongsTo(Department::class);
-}
+    {
+        return $this->belongsTo(Department::class);
+    }
    
 }

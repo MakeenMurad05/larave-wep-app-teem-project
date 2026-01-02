@@ -6,6 +6,8 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class TasksTable
@@ -14,10 +16,40 @@ class TasksTable
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('title')->searchable(),
+                TextColumn::make('project.title')->label('Project'), // لإظهار اسم المشروع التابع له
+                TextColumn::make('status')->badge(),
+                TextColumn::make('priority')->badge(),
+                TextColumn::make('assignedUser.name')->label('Assignee'),
+                TextColumn::make('creator.name')->label('Created By'),
             ])
             ->filters([
-                //
+                // 1. فلتر التصفية حسب المشروع
+            SelectFilter::make('project_id')
+                ->label('المشروع')
+                ->relationship('project', 'title') // يجلب قائمة المشاريع تلقائياً
+                ->searchable()
+                ->preload(),
+
+            // 2. فلتر التصفية حسب الحالة
+            SelectFilter::make('status')
+                ->label('الحالة')
+                ->options([
+                    'pending' => 'Pending',
+                    'in_progress' => 'In Progress',
+                    'review' => 'Review',
+                    'blocked' => 'Blocked',
+                    'completed' => 'Completed',
+                ]),
+
+            // 3. فلتر التصفية حسب الأولوية
+            SelectFilter::make('priority')
+                ->label('الأولوية')
+                ->options([
+                    'low' => 'Low',
+                    'medium' => 'Medium',
+                    'high' => 'High',
+                ]),
             ])
             ->recordActions([
                 ViewAction::make(),

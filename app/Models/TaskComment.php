@@ -8,6 +8,12 @@ class TaskComment extends Model
 {
     protected $table = 'task_comments';
 
+    protected $fillable = [
+        'task_id',
+        'user_id',
+        'comment_text',
+    ];
+
     public function task()
     {
         return $this->belongsTo(Task::class);

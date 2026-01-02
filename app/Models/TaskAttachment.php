@@ -8,6 +8,15 @@ class TaskAttachment extends Model
 {
     protected $table = 'task_attachments';
 
+    protected $fillable = [
+        'task_id',
+        'file_name',
+        'file_path',
+        'file_size',
+        'uploaded_by'
+    ];
+
+    
     public function task()
     {
         return $this->belongsTo(Task::class);

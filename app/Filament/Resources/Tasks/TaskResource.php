@@ -28,7 +28,7 @@ class TaskResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'title';
-    protected static bool $shouldRegisterNavigation = false;
+    //protected static bool $shouldRegisterNavigation = false;
 
     public static function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
@@ -81,11 +81,6 @@ class TaskResource extends Resource
             });
         }
         return $query;
-    }
-
-    public static function canCreate(): bool
-    {
-        return true;
     }
 
 }
