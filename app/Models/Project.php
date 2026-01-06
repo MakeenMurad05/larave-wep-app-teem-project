@@ -39,9 +39,10 @@ class Project extends Model
         return $this->belongsTo(Department::class);
     }
 
-    public function users()
+    public function members()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)
+        ->whereHas('roles', fn ($q) => $q->where('name', 'Member'));
     }
 
     public function creator()

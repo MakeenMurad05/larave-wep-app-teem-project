@@ -11,12 +11,12 @@ class MyRegister extends BaseRegister
 {
     protected function handleRegistration(array $data): Model
     {
-        $data['user_type'] = 'Admin';
+        $data['user_type'] = 'Member';
         $data['is_active'] = true;
 
         $user = parent::handleRegistration($data);
 
-        //$user->assignRole('panel_user'); 
+        $user->assignRole('Member'); 
 
         return $user;
     }

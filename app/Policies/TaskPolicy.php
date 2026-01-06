@@ -26,44 +26,38 @@ class TaskPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
-
-        if ($authUser->hasRole('Manager'))
-            return $task->project->users->contains($authUser);
+        return $authUser->hasAnyRole(['super_admin', 'Admin', 'Manager', 'Member']);
     }
 
     public function view(AuthUser $authUser, Task $task): bool
     {
-        if ($authUser->hasRole('Admin') || $authUser->hasRole('super_admin'))
-            return true;
-
-        if ($authUser->hasRole('Manager') && $task->project->users->contains($authUser->id))
-        {
+        if ($authUser->hasAnyRole(['super_admin', 'Admin', 'Manager'])) {
             return true;
         }
 
-        return $task->assigned_to === $authUser->id;
+        return $authUser->hasRole('Member')
+            && $task->assigned_to === $authUser->id;
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->hasRole('Manager') || $authUser->hasRole('Admin')
-        || $authUser->hasRole('super_admin');
+        return $authUser->hasAnyRole(['super_admin', 'Admin', 'Manager']);
     }
 
     public function update(AuthUser $authUser, Task $task): bool
     {
-        return $authUser->hasRole('Admin') || $authUser->hasRole('Manager');
+        if ($authUser->hasAnyRole(['super_admin', 'Admin', 'Manager'])) {
+            return true;
+        }
 
-        return $task->assigned_to === $user->id;
+        // Member: فقط لو كانت المهمة له
+        return $authUser->hasRole('Member')
+            && $task->assigned_to === $authUser->id;
     }
 
     public function delete(AuthUser $authUser, Task $task): bool
     {
-        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
-
-        if ($authUser->hasRole('Manager'))
-            return $task->project->users->contains($authUser);
+        return $authUser->hasAnyRole(['super_admin', 'Admin', 'Manager']);
     }
 
     public function restore(AuthUser $authUser, Task $task): bool

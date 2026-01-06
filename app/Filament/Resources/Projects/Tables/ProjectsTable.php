@@ -6,11 +6,11 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Support\View\Components\BadgeComponent;
-use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ProgressBarColumn;
+use RyanChandler\FilamentProgressColumn\ProgressColumn;
 
 class ProjectsTable
 {
@@ -38,6 +38,16 @@ class ProjectsTable
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
+                ProgressColumn::make('progress')
+                ->label('نسبة الإنجاز')
+                ->getStateUsing(function ($record) {
+                    $total = $record->tasks()->count();
+                    if ($total === 0) return 0;
+                    $completed = $record->tasks()->where('status', 'completed')->count();
+                    return ($completed / $total) * 100;
+                })
+                ->color('success'),
             ])
             ->filters([
                 // 1. فلتر حسب القسم

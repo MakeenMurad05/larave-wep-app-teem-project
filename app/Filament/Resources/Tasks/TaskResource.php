@@ -83,4 +83,10 @@ class TaskResource extends Resource
         return $query;
     }
 
+    public static function canCreate(): bool
+    {
+        return auth()->user()->hasAnyRole(['super_admin', 'Admin', 'Manager']);
+    }
+
+
 }

@@ -67,30 +67,16 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-    // 1. الأدمن له صلاحية دخول كل اللوحات
-        if ($this->hasRole('super_admin')) {
-            return true;
+        if ($panel->getId() !== 'admin')
+        {
+            return false;
         }
 
-        // 2. التحقق من اللوحة (تحويل المعرف لأحرف صغيرة لتجنب الأخطاء)
-        $panelId = strtolower($panel->getId());
-
-        if ($panelId === 'admin') {
-            return $this->hasRole('Admin');
-        }
-
-        if ($panelId === 'manager') {
-            return $this->hasRole('Manager');
-        }
-
-        if ($panelId === 'member') {
-            return $this->hasRole('Member');
-        }
-
-        return false;
+        return $this->hasAnyRole(['super_admin', 'Admin', 'Manager', 'Member']);
+;
     }
 
-    public function projects()
+    public function memberProjects()
     {
         return $this->belongsToMany(Project::class);
     }
@@ -110,4 +96,9 @@ class User extends Authenticatable implements FilamentUser
         return $this->belongsTo(Department::class);
     }
    
+    public function ownedProjects()
+    {
+        return $this->hasMany(Project::class, 'created_by');
+    }
+
 }

@@ -8,6 +8,7 @@ use App\Filament\Resources\Projects\Pages\ListProjects;
 use App\Filament\Resources\Projects\RelationManagers\TasksRelationManager;
 use App\Filament\Resources\Projects\Schemas\ProjectForm;
 use App\Filament\Resources\Projects\Tables\ProjectsTable;
+use Illuminate\Database\Eloquent\Builder;
 
 use App\Models\Project;
 use BackedEnum;
@@ -39,6 +40,19 @@ class ProjectResource extends Resource
         return [
             TasksRelationManager::class,
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        // الأدمن يرى كل شيء
+        if (auth()->user()->hasAnyRole(['Admin', 'super_admin'])) {
+            return $query;
+        }
+
+        // المانجر يرى فقط ما أنشأه بنفسه
+        return $query->where('created_by', auth()->id());
     }
 
     public static function getPages(): array

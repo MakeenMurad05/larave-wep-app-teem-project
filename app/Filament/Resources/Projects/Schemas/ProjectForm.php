@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Projects\Schemas;
 
 use App\Models\Department;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -49,6 +50,8 @@ class ProjectForm
         DateTimePicker::make('end_date')
             ->after('start_date')
             ->required(),
+
+        Hidden::make('created_by')->default(auth()->id()),
             ]);
     }
 }

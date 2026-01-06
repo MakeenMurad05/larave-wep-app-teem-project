@@ -55,35 +55,30 @@ class TasksRelationManager extends RelationManager
             Textarea::make('description')
                 ->disabled(fn () => auth()->user()->hasRole('Member')),
 
-Repeater::make('attachments')
-    ->relationship()
-    ->label('Task Files')
-    ->schema([
-        FileUpload::make('file_path')
-            ->directory('task-files')
-            ->visibility('public')
-            ->multiple(false)      // لكل عنصر ملف واحد فقط
-            ->required()           // validation
-            ->dehydrated()         // ⭐ مهم جداً لإرسال القيمة
-            ->storeFileNamesIn('file_name')
-            ->afterStateUpdated(function ($state, callable $set) {
-                // حجم الملف
-                if ($state instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                    $set('file_size', $state->getSize());
-                }
-            }),
+            Repeater::make('attachments')
+                ->relationship()
+                ->label('Task Files')
+                ->schema([
+                    FileUpload::make('file_path')
+                        ->directory('task-files')
+                        ->visibility('public')
+                        ->multiple(false)      // لكل عنصر ملف واحد فقط
+                        ->dehydrated()         // ⭐ مهم جداً لإرسال القيمة
+                        ->storeFileNamesIn('file_name')
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            // حجم الملف
+                            if ($state instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
+                                $set('file_size', $state->getSize());
+                            }
+                        }),
 
-        Hidden::make('file_name')
-            ->dehydrateStateUsing(fn ($state, $get) => basename($get('file_path'))),
+            Hidden::make('file_name')
+                ->dehydrateStateUsing(fn ($state, $get) => basename($get('file_path'))),
 
-        Hidden::make('file_size')->default(0),
-        Hidden::make('uploaded_by')->default(fn () => auth()->id()),
+            Hidden::make('file_size')->default(0),
+            Hidden::make('uploaded_by')->default(fn () => auth()->id()),
     ])
     ->addActionLabel('Add File'),
-
-            DateTimePicker::make('due_date')
-                ->default(now())
-                ->minDate(now()),
 
             Select::make('assigned_to')
                 ->relationship('assignedUser', 'name')
@@ -132,7 +127,19 @@ Repeater::make('attachments')
                 //
             ])
             ->headerActions([
-                CreateAction::make(),
+                
+                CreateAction::make()
+                ->mutateFormDataUsing(function (array $data): array {
+                            // إذا كانت المصفوفة موجودة، نقوم بفلترتها
+                            if (!empty($data['attachments'])) {
+                                $data['attachments'] = array_filter($data['attachments'], function ($attachment) {
+                                    // لا نسمح بمرور السجل إلا إذا كان ملف_بث يحتوي على قيمة (أي تم رفع ملف فعلي)
+                                    return !empty($attachment['file_path']);
+                                });
+                            }
+                            return $data;
+                            }),
+                            
                 AssociateAction::make(),
             ])
             ->recordActions([
