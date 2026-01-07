@@ -19,6 +19,16 @@ class Task extends Model
         'created_by',
     ];
 
+    protected static function booted()
+    {
+        static::saved(function ($task) {
+            if ($task->project) {
+                // استدعاء دالة التحديث التي كتبتها أنت في موديل Project
+                $task->project->updateProgress();
+            }
+        });
+    }
+
     public function assignedUser()
     {
         return $this->belongsTo(User::class, 'assigned_to');

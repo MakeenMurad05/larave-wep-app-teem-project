@@ -24,6 +24,34 @@ class Project extends Model
     const STATUS_COMPLETED = 'completed';
     const STATUS_ARCHIVED = 'archived';
 
+    protected static function booted()
+    {
+        static::saving(function ($project) {
+            // حساب النسبة لحظياً للتأكد من الحالة
+            $total = $project->tasks()->count();
+            if ($total > 0) {
+                $completed = $project->tasks()->where('status', 'completed')->count();
+                $percentage = ($completed / $total) * 100;
+
+                if ($percentage >= 100) {
+                    $project->status = self::STATUS_COMPLETED;
+                } else {
+                    // إذا كانت النسبة أقل من 100 وكان المشروع مكتمل، نعيده لـ Active
+                    if ($project->status === self::STATUS_COMPLETED) {
+                        $project->status = self::STATUS_ACTIVE;
+                    }
+                }
+            }
+        });
+    }
+
+    // تعديل دالة التحديث لتعمل بدون عمود في الداتابيز
+    public function updateProgress()
+    {
+        // بمجرد مناداة save، سيتم تفعيل الـ booted static::saving أعلاه وتحديث الحالة
+        $this->save(); 
+    }
+
     public function isActive(): bool
     {
         return $this->status === self::STATUS_ACTIVE;
