@@ -27,14 +27,14 @@ class TasksTable
             ->filters([
                 // 1. فلتر التصفية حسب المشروع
             SelectFilter::make('project_id')
-                ->label('المشروع')
+                ->label('Project')
                 ->relationship('project', 'title') // يجلب قائمة المشاريع تلقائياً
                 ->searchable()
                 ->preload(),
 
             // 2. فلتر التصفية حسب الحالة
             SelectFilter::make('status')
-                ->label('الحالة')
+                ->label('Status')
                 ->options([
                     'pending' => 'Pending',
                     'in_progress' => 'In Progress',
@@ -45,7 +45,7 @@ class TasksTable
 
             // 3. فلتر التصفية حسب الأولوية
             SelectFilter::make('priority')
-                ->label('الأولوية')
+                ->label('Priority')
                 ->options([
                     'low' => 'Low',
                     'medium' => 'Medium',

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Tasks\Schemas;
 
+use App\Models\Project;
 use App\Models\User;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
@@ -34,23 +35,32 @@ class TaskForm
                     'completed' => 'Completed',
                 ])
                 ->required()
-                ->visible(fn () => auth()->user()->hasRole('Member')),
+                ->visible(fn () => !auth()->user()->hasRole('Member')),
 
-            // تعديل حقل المشروع ليظهر فقط مشاريع المانجر
             Select::make('project_id')
                 ->relationship(
                     name: 'project', 
                     titleAttribute: 'title',
-                    modifyQueryUsing: function (Builder $query) {
-                        if (auth()->user()->hasRole('Manager')) {
-                            // المانجر يرى فقط مشاريعه التي أنشأها
-                            return $query->where('created_by', auth()->id());
-                        }
-                        return $query;
+                    modifyQueryUsing: function (Builder $query, $get) {
+                        // جلب الـ ID الخاص بالمشروع المرتبط بالمهمة الحالية
+                        $currentProjectId = $get('project_id');
+
+                        return $query
+                            ->where(function ($q) use ($currentProjectId) {
+                                // إظهار المشاريع غير المكتملة
+                                $q->where('status', '!=', 'completed')
+                                // وأيضاً إظهار المشروع الحالي حتى لو كان مكتملاً لكي لا يختفي من الحقل
+                                ->orWhere('id', $currentProjectId);
+                            })
+                            ->when(auth()->user()->hasRole('Manager'), function ($q) {
+                                return $q->where('created_by', auth()->id());
+                            });
                     }
                 )
                 ->required()
-                ->disabled(fn () => auth()->user()->hasRole('Member')),
+                ->disabled(fn () => auth()->user()->hasRole('Member'))
+                // إضافة رسالة توضيحية للمستخدم (اختياري)
+                ->helperText('The complete project is not showing in the list'),
 
             Select::make('priority')
                 ->options([

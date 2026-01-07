@@ -34,7 +34,7 @@ class TasksRelationManager extends RelationManager
         return $data;
     }
 
-    
+
     public function form(Schema $schema): Schema
     {
         return $schema->schema([
@@ -152,7 +152,8 @@ class TasksRelationManager extends RelationManager
                                 });
                             }
                             return $data;
-                            }),
+                            })
+                ->visible(fn ($livewire) => $livewire->ownerRecord->status !== 'completed'),
                             
                 AssociateAction::make(),
             ])
