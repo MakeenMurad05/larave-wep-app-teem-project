@@ -9,8 +9,8 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\ProgressBarColumn;
 use RyanChandler\FilamentProgressColumn\ProgressColumn;
+
 
 class ProjectsTable
 {
