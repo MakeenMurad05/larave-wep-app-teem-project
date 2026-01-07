@@ -29,7 +29,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('admin')
+            ->path('Task_Management')
             ->login()
             ->registration(MyRegister::class)
             ->colors([
