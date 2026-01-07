@@ -22,6 +22,12 @@ class LatestTasks extends TableWidget
                     $query->where('assigned_to', auth()->id());
                 }
 
+                if (auth()->user()->hasRole('Manager')) {
+                        $query->whereHas('project', function($q) {
+                            $q->where('created_by', auth()->id());
+                        });
+                    }
+
                 return $query;
             })
             ->columns([

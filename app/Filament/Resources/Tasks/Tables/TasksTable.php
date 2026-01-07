@@ -22,6 +22,7 @@ class TasksTable
                 TextColumn::make('priority')->badge(),
                 TextColumn::make('assignedUser.name')->label('Assignee'),
                 TextColumn::make('creator.name')->label('Created By'),
+                TextColumn::make('due_date')->label('due_date'),
             ])
             ->filters([
                 // 1. فلتر التصفية حسب المشروع

@@ -4,18 +4,31 @@ namespace App\Filament\Widgets;
 
 use App\Models\Project;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectStatusChart extends ChartWidget
 {
     protected ?string $heading = 'Project Status Chart';
-protected static ?int $sort = 21;
+    protected static ?int $sort = 1;
+
+
+    public static function canView(): bool
+    {
+        $user = Auth::user();
+
+        // إذا كان Member لا يظهر له الـ Chart
+        return !Auth::user()?->hasRole('Member');
+    }
+
     protected function getData(): array
     {
         $user = auth()->user();
         $query = Project::query();
 
+
         // فلترة للمانجر: يرى فقط مشاريعه الخاصة
-        if ($user->hasRole('Manager')) {
+        if ($user->hasRole('Manager')) 
+        {
             $query->where('created_by', $user->id);
         }
 

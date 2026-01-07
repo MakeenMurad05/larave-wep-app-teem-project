@@ -10,9 +10,10 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StatsOverview extends StatsOverviewWidget
 {
-    protected static ?int $sort = 150; 
-// يجعل الودجت يمتد على كامل العرض المتاح في الأعلى
-protected int | string | array $columnSpan = 'full';
+    protected static ?int $sort = 2;
+    
+    // يجعل الودجت يمتد على كامل العرض المتاح في الأعلى
+    //protected int | string | array $columnSpan = 'full';
     // لتوزيع الكروت بشكل متناسق (مثلاً 3 كروت في الصف الواحد)
     //protected static ?int $columns = 3;
 
@@ -86,8 +87,14 @@ protected int | string | array $columnSpan = 'full';
 
             $stats[] = Stat::make('Completed Projects', (clone $projectQuery)->where('status', 'completed')->count())
                 ->description('Finished projects')
-                ->icon('heroicon-m-archive-box')
+                ->icon('heroicon-m-check-badge') // تم تغيير الأيقونة لتناسب الانتهاء
                 ->color('info');
+
+            // إضافة الحالة الناقصة: Archived Projects
+            $stats[] = Stat::make('Archived Projects', (clone $projectQuery)->where('status', 'archived')->count())
+                ->description('Archived or deleted projects')
+                ->icon('heroicon-m-archive-box') // أيقونة الصندوق للأرشفة
+                ->color('danger');
         }
 
 

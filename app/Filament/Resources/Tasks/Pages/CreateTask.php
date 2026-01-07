@@ -13,6 +13,8 @@ class CreateTask extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        dd($data);
+
         $data['due_date'] = now();
 
         return $data;

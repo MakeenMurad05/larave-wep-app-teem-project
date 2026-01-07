@@ -72,14 +72,12 @@ class TaskResource extends Resource
             return $query->where('assigned_to', auth()->id());
         }
 
-        if (auth()->user()->hasRole('Manager'))
-        {
-            return $query->wherehas('project', function($q){
-                $q->whereHas('users', function($u){
-                    $u->where('users.id', auth()->id());
+        if (auth()->user()->hasRole('Manager')) {
+                return $query->whereHas('project', function($q) {
+                    // هنا نفترض أن حقل منشئ المشروع في جدول projects هو user_id أو created_by
+                    $q->where('created_by', auth()->id()); 
                 });
-            });
-        }
+            }
         return $query;
     }
 

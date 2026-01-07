@@ -11,7 +11,6 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DissociateAction;
 use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
@@ -22,11 +21,20 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class TasksRelationManager extends RelationManager
 {
     protected static string $relationship = 'tasks';
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['due_date'] = now();
+
+        return $data;
+    }
+
+    
     public function form(Schema $schema): Schema
     {
         return $schema->schema([
@@ -57,20 +65,21 @@ class TasksRelationManager extends RelationManager
 
             Repeater::make('attachments')
                 ->relationship()
+                ->minItems(0)
+                ->default([])
                 ->label('Task Files')
                 ->schema([
-                    FileUpload::make('file_path')
-                        ->directory('task-files')
-                        ->visibility('public')
-                        ->multiple(false)      // لكل عنصر ملف واحد فقط
-                        ->dehydrated()         // ⭐ مهم جداً لإرسال القيمة
-                        ->storeFileNamesIn('file_name')
-                        ->afterStateUpdated(function ($state, callable $set) {
-                            // حجم الملف
-                            if ($state instanceof \Livewire\Features\SupportFileUploads\TemporaryUploadedFile) {
-                                $set('file_size', $state->getSize());
-                            }
-                        }),
+            FileUpload::make('file_path')
+                ->required()
+                ->directory('task-files')
+                ->storeFileNamesIn('file_name')
+                ->live() 
+                ->afterStateUpdated(function ($state, callable $set) {
+                    if ($state instanceof TemporaryUploadedFile) {
+                        $set('file_size', $state->getSize());
+                        $set('file_name', $state->getClientOriginalName());
+                    }
+                }),
 
             Hidden::make('file_name')
                 ->dehydrateStateUsing(fn ($state, $get) => basename($get('file_path'))),
@@ -81,10 +90,15 @@ class TasksRelationManager extends RelationManager
     ->addActionLabel('Add File'),
 
             Select::make('assigned_to')
-                ->relationship('assignedUser', 'name')
+                ->label('Assigned user')
                 ->searchable()
-                ->preload()
-                ->required(),
+                ->getSearchResultsUsing(fn (string $search) =>
+                    User::whereHas('roles', fn ($q) => $q->where('name', 'Member'))
+                        ->where('name', 'like', "%{$search}%")
+                        ->pluck('name', 'id')
+                )
+                ->getOptionLabelUsing(fn ($value) => User::find($value)?->name)
+                ->disabled(fn () => auth()->user()->hasRole('Member')),
 
             Hidden::make('created_by')->default(auth()->id()),
         ]);

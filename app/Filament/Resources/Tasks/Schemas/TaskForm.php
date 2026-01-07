@@ -11,6 +11,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+// تم تغيير الـ use هنا من Scout إلى Eloquent
+use Illuminate\Database\Eloquent\Builder; 
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class TaskForm
@@ -34,8 +36,19 @@ class TaskForm
                 ->required()
                 ->visible(fn () => auth()->user()->hasRole('Member')),
 
+            // تعديل حقل المشروع ليظهر فقط مشاريع المانجر
             Select::make('project_id')
-                ->relationship('project', 'title') // Task belongsTo Project
+                ->relationship(
+                    name: 'project', 
+                    titleAttribute: 'title',
+                    modifyQueryUsing: function (Builder $query) {
+                        if (auth()->user()->hasRole('Manager')) {
+                            // المانجر يرى فقط مشاريعه التي أنشأها
+                            return $query->where('created_by', auth()->id());
+                        }
+                        return $query;
+                    }
+                )
                 ->required()
                 ->disabled(fn () => auth()->user()->hasRole('Member')),
 
@@ -56,29 +69,37 @@ class TaskForm
                 ->default([])
                 ->label('Task Files')
                 ->schema([
-            FileUpload::make('file_path')
-                ->required()
-                ->directory('task-files')
-                ->storeFileNamesIn('file_name')
-                ->live() 
-                ->afterStateUpdated(function ($state, callable $set) {
-                    if ($state instanceof TemporaryUploadedFile) {
-                        $set('file_size', $state->getSize());
-                        $set('file_name', $state->getClientOriginalName());
-                    }
-                }),
+                    FileUpload::make('file_path')
+                        ->required()
+                        ->directory('task-files')
+                        ->storeFileNamesIn('file_name')
+                        ->live() 
+                        ->afterStateUpdated(function ($state, callable $set) {
+                            if ($state instanceof TemporaryUploadedFile) {
+                                $set('file_size', $state->getSize());
+                                $set('file_name', $state->getClientOriginalName());
+                            }
+                        }),
 
-            Hidden::make('file_name')
-                ->dehydrateStateUsing(fn ($state, $get) => basename($get('file_path'))),
+                    Hidden::make('file_name')
+                        ->dehydrateStateUsing(fn ($state, $get) => basename($get('file_path'))),
 
-            Hidden::make('file_size')->default(0),
-            Hidden::make('uploaded_by')->default(fn () => auth()->id()),
-    ])
-    ->addActionLabel('Add File'),
-
+                    Hidden::make('file_size')->default(0),
+                    Hidden::make('uploaded_by')->default(fn () => auth()->id()),
+                ])
+                ->addActionLabel('Add File'),
 
             Select::make('assigned_to')
-                ->relationship('assignedUser', 'name')
+                ->relationship(
+                    name: 'assignedUser',
+                    titleAttribute: 'name',
+                    modifyQueryUsing: function (Builder $query) {
+                        // الآن Builder يشير إلى Eloquent ولن يظهر الخطأ
+                        $query->whereHas('roles', function (Builder $q) {
+                            $q->where('name', 'Member');
+                        });
+                    }
+                )
                 ->searchable()
                 ->preload()
                 ->disabled(fn () => auth()->user()->hasRole('Member')),

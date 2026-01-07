@@ -9,7 +9,7 @@ class TaskStatusChart extends ChartWidget
 {
     protected ?string $heading = 'Task Status Chart';
 
-    protected static ?int $sort = 10;
+    protected static ?int $sort = 1;
 
     protected function getData(): array
     {
@@ -17,6 +17,12 @@ class TaskStatusChart extends ChartWidget
 
         if (auth()->user()->hasRole('Member')) {
             $query->where('assigned_to', auth()->id());
+        }
+
+        if (auth()->user()->hasRole('Manager')) {
+        $query->whereHas('project', function($q) {
+            $q->where('created_by', auth()->id());
+        });
         }
 
         return [
