@@ -81,10 +81,18 @@ class TaskForm
                 name: 'assignedUser',
                 titleAttribute: 'name',
                 modifyQueryUsing: function (Builder $query) {
-                    // الآن Builder يشير إلى Eloquent ولن يظهر الخطأ
+                    // 1. First, apply the Role Filter (Only workers)
                     $query->whereHas('roles', function (Builder $q) {
                         $q->where('name', 'Member');
                     });
+
+                    // 2. Then, apply the Department Filter (Only my team)
+                    // (We check if the user is a Manager first to apply this restriction)
+                    if (auth()->user()->hasRole('Manager')) {
+                        $query->where('department_id', auth()->user()->department_id);
+                    }
+                    
+                    return $query;
                 }
             )
             ->searchable()

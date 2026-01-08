@@ -31,6 +31,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('Task_Management')
             ->login()
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('5s')
             ->registration(MyRegister::class)
             ->colors([
                 'primary' => Color::Amber,

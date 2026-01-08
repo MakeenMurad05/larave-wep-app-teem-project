@@ -36,6 +36,12 @@ class UserForm
                     ->searchable()
                     ->label('Assign Roles')
                     ->required(),
+                Select::make('department_id')
+                    ->label('Department')
+                    ->relationship('department', 'name') // Connects to Department Model, shows Name
+                    ->searchable() // Allows searching if you have many departments
+                    ->preload()    // Loads the list immediately
+                    ->required(),
             ]);
     }
 }

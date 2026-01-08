@@ -50,6 +50,11 @@ class ProjectForm
         DateTimePicker::make('end_date')
             ->after('start_date')
             ->required(),
+            
+        // Instead of asking the user to select a department, 
+        // we hide the field and fill it automatically.
+        Hidden::make('department_id')
+            ->default(auth()->user()->department_id),
 
         Hidden::make('created_by')->default(auth()->id()),
             ]);

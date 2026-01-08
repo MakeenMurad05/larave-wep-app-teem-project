@@ -6,6 +6,7 @@ use App\Filament\Resources\Tasks\TaskResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Notification;
 
 class EditTask extends EditRecord
 {
@@ -28,5 +29,29 @@ class EditTask extends EditRecord
         }
 
         return $data;
+    }
+
+    protected function afterSave(): void
+    {
+        $task = $this->record;
+
+        // Check if status changed to 'completed'
+        if ($task->status === 'completed') {
+            // Find the Manager who created the task (or project owner)
+            $manager = \App\Models\User::find($task->created_by);
+
+            if ($manager) {
+                \Filament\Notifications\Notification::make()
+                    ->title('Task Completed')
+                    ->body("**{$task->assignedUser->name}** finished task: {$task->title}")
+                    ->success()
+                    ->actions([
+                        \Filament\Notifications\Actions\Action::make('view')
+                            ->button()
+                            ->url(TaskResource::getUrl('edit', ['record' => $task->id])),
+                    ])
+                    ->sendToDatabase($manager);
+            }
+        }
     }
 }

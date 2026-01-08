@@ -51,8 +51,12 @@ class ProjectResource extends Resource
             return $query;
         }
 
-        // المانجر يرى فقط ما أنشأه بنفسه
-        return $query->where('created_by', auth()->id());
+        if (auth()->user()->hasRole('manager')) {
+        return $query->where('department_id', auth()->user()->department_id);
+        }
+
+       return $query->where('department_id', auth()->user()->department_id);
+       
     }
 
     public static function getPages(): array
