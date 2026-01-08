@@ -4,100 +4,67 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Models\Project;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class TaskPolicy
 {
     use HandlesAuthorization;
     
-    public function before(User $user, $ability)
-    {
-        if ($user->hasRole('super_admin') || $user->hasRole('Admin')) 
-        {
-            return true;
-        }
-
-        return null; 
-    }
-
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->hasAnyRole(['super_admin', 'Admin', 'Manager', 'Member']);
+        return $authUser->can('ViewAny:Task');
     }
 
     public function view(AuthUser $authUser, Task $task): bool
     {
-        if ($authUser->hasAnyRole(['super_admin', 'Admin', 'Manager'])) {
-            return true;
-        }
-
-        return $authUser->hasRole('Member')
-            && $task->assigned_to === $authUser->id;
+        return $authUser->can('View:Task');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->hasAnyRole(['super_admin', 'Admin', 'Manager']);
+        return $authUser->can('Create:Task');
     }
 
     public function update(AuthUser $authUser, Task $task): bool
     {
-        if ($authUser->hasAnyRole(['super_admin', 'Admin', 'Manager'])) {
-            return true;
-        }
-
-        // Member: فقط لو كانت المهمة له
-        return $authUser->hasRole('Member')
-            && $task->assigned_to === $authUser->id;
+        return $authUser->can('Update:Task');
     }
 
     public function delete(AuthUser $authUser, Task $task): bool
     {
-        return $authUser->hasAnyRole(['super_admin', 'Admin', 'Manager']);
+        return $authUser->can('Delete:Task');
     }
 
     public function restore(AuthUser $authUser, Task $task): bool
     {
-        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
+        return $authUser->can('Restore:Task');
     }
 
     public function forceDelete(AuthUser $authUser, Task $task): bool
     {
-        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
+        return $authUser->can('ForceDelete:Task');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
+        return $authUser->can('ForceDeleteAny:Task');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
+        return $authUser->can('RestoreAny:Task');
     }
 
     public function replicate(AuthUser $authUser, Task $task): bool
     {
-        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
+        return $authUser->can('Replicate:Task');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
-
-        if ($authUser->hasRole('Manager'))
-            return $task->project->users->contains($authUser);
+        return $authUser->can('Reorder:Task');
     }
-
-    public function uploadFile(AuthUser $authUser, Task $task): bool
-    {
-        return $task->assigned_to === $authUser->id || $authUser->hasRole('Manager');
-    }
-
-
 
 }

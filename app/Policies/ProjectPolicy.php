@@ -12,47 +12,29 @@ class ProjectPolicy
 {
     use HandlesAuthorization;
     
-    public function before(AuthUser $authUser, $ability)
-    {
-        if ($authUser->hasRole('Admin') || $authUser->hasRole('super_admin')) {
-            return true;
-        }
-    }
-
     public function viewAny(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->can('ViewAny:Project');
     }
 
     public function view(AuthUser $authUser, Project $project): bool
     {
-        if ($authUser->hasAnyRole(['Admin', 'super_admin'])) 
-        {
-            return true;
-        }
-
-        if ($authUser->hasRole('Manager')) 
-        {
-            return $project->created_by === $authUser->id
-                || $project->users->contains($authUser);
-        }
-
-        return false;
+        return $authUser->can('View:Project');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->hasAnyRole(['Admin', 'Manager']);
+        return $authUser->can('Create:Project');
     }
 
     public function update(AuthUser $authUser, Project $project): bool
     {
-        return $this->view($authUser, $project);
+        return $authUser->can('Update:Project');
     }
 
     public function delete(AuthUser $authUser, Project $project): bool
     {
-        return $this->view($authUser, $project);
+        return $authUser->can('Delete:Project');
     }
 
     public function restore(AuthUser $authUser, Project $project): bool

@@ -12,34 +12,29 @@ class DepartmentPolicy
 {
     use HandlesAuthorization;
     
-    public function before(AuthUser $authUser, $ability)
-    {
-        return $authUser->hasAnyRole(['super_admin', 'Admin']);
-    }
-
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->hasAnyRole(['super_admin', 'Admin']);
+        return $authUser->can('ViewAny:Department');
     }
 
     public function view(AuthUser $authUser, Department $department): bool
     {
-        return $authUser->hasAnyRole(['super_admin', 'Admin']);
+        return $authUser->can('View:Department');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->hasAnyRole(['super_admin', 'Admin']);
+        return $authUser->can('Create:Department');
     }
 
     public function update(AuthUser $authUser, Department $department): bool
     {
-        return $authUser->hasAnyRole(['super_admin', 'Admin']);
+        return $authUser->can('Update:Department');
     }
 
     public function delete(AuthUser $authUser, Department $department): bool
     {
-        return $authUser->hasAnyRole(['super_admin', 'Admin']);
+        return $authUser->can('Delete:Department');
     }
 
     public function restore(AuthUser $authUser, Department $department): bool

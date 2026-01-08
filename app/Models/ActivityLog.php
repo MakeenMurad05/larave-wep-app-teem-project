@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityLog extends Model
 {
-    protected $table = 'activitylogs';
+    protected $table = 'activity_logs';
 
     protected $fillable = [
         'log_name',

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Project extends Model
 {
+    use LogsActivity; // <--- Add Trait
     protected $table = 'projects';
 
     protected $fillable = [
@@ -24,6 +27,15 @@ class Project extends Model
     const STATUS_COMPLETED = 'completed';
     const STATUS_ARCHIVED = 'archived';
 
+     
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['title', 'status', 'start_date', 'department_id']) // What to track
+            ->logOnlyDirty()
+            ->setDescriptionForEvent(fn(string $eventName) => "Project has been {$eventName}");
+    }
     protected static function booted()
     {
         static::saving(function ($project) {

@@ -4,8 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 class Task extends Model
 {
+    use LogsActivity;
     protected $table = 'tasks';
 
     protected $fillable = [
@@ -52,6 +56,14 @@ class Task extends Model
     public function attachments()
     {
         return $this->hasMany(TaskAttachment::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['title', 'status', 'priority', 'description']) // Log these columns
+            ->logOnlyDirty() // Only log changes (don't log if nothing changed)
+            ->setDescriptionForEvent(fn(string $eventName) => "This task has been {$eventName}");
     }
 
     

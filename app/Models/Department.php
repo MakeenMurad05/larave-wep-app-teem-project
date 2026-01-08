@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Department extends Model
 {
+     use LogsActivity;
     protected $table = 'department';
 
         protected $fillable = [
@@ -14,6 +17,16 @@ class Department extends Model
         'description',
     ];
 
+   
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'description'])
+            ->logOnlyDirty()
+            ->setDescriptionForEvent(fn(string $eventName) => "Department {$eventName}");
+    }
+    
     public function projects()
     {
         return $this->hasMany(Project::class);

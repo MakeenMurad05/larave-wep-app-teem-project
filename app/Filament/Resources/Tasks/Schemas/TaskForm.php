@@ -73,6 +73,24 @@ class TaskForm
             Textarea::make('description')
                 ->disabled(fn () => auth()->user()->hasRole('Member')),
 
+            Textarea::make('Comments')
+            ->visible(fn () => auth()->user()->hasRole('Member')),
+
+            Select::make('assigned_to')
+            ->relationship(
+                name: 'assignedUser',
+                titleAttribute: 'name',
+                modifyQueryUsing: function (Builder $query) {
+                    // الآن Builder يشير إلى Eloquent ولن يظهر الخطأ
+                    $query->whereHas('roles', function (Builder $q) {
+                        $q->where('name', 'Member');
+                    });
+                }
+            )
+            ->searchable()
+            ->preload()
+            ->disabled(fn () => auth()->user()->hasRole('Member')),
+            
             Repeater::make('attachments')
                 ->relationship()
                 ->minItems(0)
@@ -99,20 +117,7 @@ class TaskForm
                 ])
                 ->addActionLabel('Add File'),
 
-            Select::make('assigned_to')
-                ->relationship(
-                    name: 'assignedUser',
-                    titleAttribute: 'name',
-                    modifyQueryUsing: function (Builder $query) {
-                        // الآن Builder يشير إلى Eloquent ولن يظهر الخطأ
-                        $query->whereHas('roles', function (Builder $q) {
-                            $q->where('name', 'Member');
-                        });
-                    }
-                )
-                ->searchable()
-                ->preload()
-                ->disabled(fn () => auth()->user()->hasRole('Member')),
+        
 
             Hidden::make('created_by')->default(auth()->id()),
         ]);
