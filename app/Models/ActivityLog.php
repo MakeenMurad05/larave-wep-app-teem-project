@@ -17,7 +17,7 @@ class ActivityLog extends Model
         'properties'
     ];
     
-    public function user()
+    public function causer()
     {
         return $this->belongsTo(User::class, 'causer_id');
     }

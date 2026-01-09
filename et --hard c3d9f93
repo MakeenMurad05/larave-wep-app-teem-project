@@ -1,0 +1,26 @@
+[33m26e1b81[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix: Add Department selector to User form to link Managers/Members correctly AND Feat: Implement Database Notifications system and fix Queue config
+[33m3cfed03[m Feat: Add Activity Log resource, install spatie package, and update Task form grid layout Update Migration
+[33m782f6ad[m Merge branch 'main' of https://github.com/MakeenMurad05/larave-wep-app-teem-project
+[33m5ce0b52[m :q! :wq
+[33mc3d9f93[m Update Route Name to Task_Management
+[33m3fe952c[m add prograss column and move and rmove task from project to another
+[33m08c84d3[m Create stats Overview with Permissions
+[33m63848a1[m add Role and some widgets files
+[33mebc2549[m delete manager and admin panaels
+[33m563927f[m upsate
+[33m57359ec[m Feat: Add Manager and Member panels, role logic, and departments
+[33mb38fa6b[m Merge branch 'main' of https://github.com/MakeenMurad05/larave-wep-app-teem-project :wq :wq
+[33m8b02699[m Resolve merge and update models and migrations
+[33m8ef2f3f[m Update evry think
+[33m3038b9e[m Update User model and debugbar gitignore
+[33m4f826f7[m Create Register user
+[33me715a32[m install pakages
+[33mb806fad[m Update Models
+[33mfe733fe[m Update Models
+[33m3e87ebb[m Create Task Management Models
+[33mf98e4a4[m Create Task Management Migrations
+[33m7972490[m Fixed merge conflicts and package versions
+[33m757af63[m Installed Filament
+[33mff296b2[m Add permissions config and migrations
+[33m92e0c11[m function test
+[33m9b45c07[m Initial Laravel project

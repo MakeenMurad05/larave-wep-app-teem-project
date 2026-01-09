@@ -14,22 +14,22 @@ class ActivityLogPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:ActivityLog');
+        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
     }
 
     public function view(AuthUser $authUser, ActivityLog $activityLog): bool
     {
-        return $authUser->can('View:ActivityLog');
+        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:ActivityLog');
+        return true;
     }
 
     public function update(AuthUser $authUser, ActivityLog $activityLog): bool
     {
-        return $authUser->can('Update:ActivityLog');
+        return $authUser->hasRole('Admin') || $authUser->hasRole('super_admin');
     }
 
     public function delete(AuthUser $authUser, ActivityLog $activityLog): bool
