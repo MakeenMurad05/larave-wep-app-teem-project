@@ -2,66 +2,79 @@
 
 namespace App\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
-use Illuminate\Auth\Access\HandlesAuthorization;
+use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
-    use HandlesAuthorization;
-    
-    public function viewAny(AuthUser $authUser): bool
+    /*
+     * Determine whether the user can view any models.
+     */
+
+    public function before(User $user, $ability)
     {
-        return $authUser->can('ViewAny:User');
+        if ($user->hasRole('Admin') || $user->hasRole('super_admin')) {
+            return true;
+        }
+
+        return null; 
     }
 
-    public function view(AuthUser $authUser): bool
+    public function viewAny(User $user): bool
     {
-        return $authUser->can('View:User');
+        return $user->hasRole('Admin') ? true : null || $user->hasRole('super_admin');
     }
 
-    public function create(AuthUser $authUser): bool
+    /*
+     * Determine whether the user can view the model.
+     */
+    public function view(User $user, User $model): bool
     {
-        return $authUser->can('Create:User');
+        return $user->hasRole('Admin') ? true : null || $user->hasRole('super_admin');
     }
 
-    public function update(AuthUser $authUser): bool
+    /*
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
     {
-        return $authUser->can('Update:User');
+        return $user->hasRole('super_admin');
     }
 
-    public function delete(AuthUser $authUser): bool
+    /*
+     * Determine whether the user can update the model.
+     */
+    public function update(User $user, User $model): bool
     {
-        return $authUser->can('Delete:User');
+        if ($user->hasRole('super_admin'))
+        {
+            return true;
+        }
+
+        return $user->hasRole('Admin') && $user->id === $model->id;
     }
 
-    public function restore(AuthUser $authUser): bool
+    /*
+     * Determine whether the user can delete the model.
+     */
+    public function delete(User $user, User $model): bool
     {
-        return $authUser->can('Restore:User');
+        return $user->hasRole('Admin') && $user->id !== $model->id;
     }
 
-    public function forceDelete(AuthUser $authUser): bool
+    /*
+     * Determine whether the user can restore the model.
+     */
+    public function restore(User $user, User $model): bool
     {
-        return $authUser->can('ForceDelete:User');
+        return false;
     }
 
-    public function forceDeleteAny(AuthUser $authUser): bool
+    /**
+     * Determine whether the user can permanently delete the model.
+     */
+    public function forceDelete(User $user, User $model): bool
     {
-        return $authUser->can('ForceDeleteAny:User');
+        return false;
     }
-
-    public function restoreAny(AuthUser $authUser): bool
-    {
-        return $authUser->can('RestoreAny:User');
-    }
-
-    public function replicate(AuthUser $authUser): bool
-    {
-        return $authUser->can('Replicate:User');
-    }
-
-    public function reorder(AuthUser $authUser): bool
-    {
-        return $authUser->can('Reorder:User');
-    }
-
 }
