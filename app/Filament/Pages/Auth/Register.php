@@ -32,12 +32,12 @@ class MyRegister extends BaseRegister
             $this->getPasswordFormComponent(),
             $this->getPasswordConfirmationFormComponent(),
 
-Select::make('department_id')
-    ->label('Department')
-    ->options(
-        Department::pluck('name', 'id')->toArray()
-    )
-    ->required(),
+            Select::make('department_id')
+                ->label('Department')
+                ->options(
+                    \App\Models\Department::pluck('name', 'id')
+                )
+                ->required(),
         ];
     }
 }

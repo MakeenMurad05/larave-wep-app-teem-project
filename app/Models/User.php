@@ -104,7 +104,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function department()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(Department::class, 'department_id');
     }
    
     public function ownedProjects()
