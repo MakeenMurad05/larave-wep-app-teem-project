@@ -27,7 +27,7 @@ class ProjectsTable
                 TextColumn::make('status')->badge(),
 
                 TextColumn::make('progress')
-                    ->label('نسبة الإنجاز')
+                    ->label('Progress %')
                     ->getStateUsing(function ($record) {
                         $total = $record->tasks()->count();
                         if ($total === 0) return 0;

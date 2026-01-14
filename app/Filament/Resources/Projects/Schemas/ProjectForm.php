@@ -17,12 +17,6 @@ class ProjectForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->schema([ 
-            Select::make('department_id')
-            ->label('Department')
-            ->relationship('department', 'name')
-            ->required()
-            ->searchable()
-            ->preload(),
 
         Select::make('status')
             ->options([
