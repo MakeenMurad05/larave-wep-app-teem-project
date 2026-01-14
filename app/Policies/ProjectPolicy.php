@@ -21,7 +21,7 @@ class ProjectPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return false;
+        return true;
     }
 
     public function view(AuthUser $authUser, Project $project): bool
