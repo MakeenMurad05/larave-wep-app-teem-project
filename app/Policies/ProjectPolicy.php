@@ -19,12 +19,7 @@ class ProjectPolicy
         }
     }
 
-    public function viewAny(AuthUser $authUser): bool
-    {
-        return $authUser->hasAnyRole(['Admin', 'super_admin']);
-    }
-
-    public function view(AuthUser $authUser, Project $project): bool
+    public function viewAny(AuthUser $authUser, Project $project): bool
     {
         if ($authUser->hasAnyRole(['Admin', 'super_admin'])) 
         {
@@ -38,6 +33,11 @@ class ProjectPolicy
         }
 
         return false;
+    }
+
+    public function view(AuthUser $authUser, Project $project): bool
+    {
+        return $this->viewAny($authUser, $project);
     }
 
     public function create(AuthUser $authUser): bool
