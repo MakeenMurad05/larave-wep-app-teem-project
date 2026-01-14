@@ -22,27 +22,20 @@ class MyRegister extends BaseRegister
         return $user;
     }
 
-    protected function getForms(): array
+    protected function getFormSchema(): array
     {
         return [
-            'form' => $this->form(
-                $this->makeForm()
-                    ->schema([
-                        $this->getNameFormComponent(),
-                        $this->getEmailFormComponent(),
-                        $this->getPasswordFormComponent(),
-                        $this->getPasswordConfirmationFormComponent(),
-                        
-                        // أضف هذا الجزء هنا
-                        Select::make('department_id')
-                            ->label('Department')
-                            ->relationship('department', 'name') // يفترض وجود علاقة في مودل User
-                            ->required()
-                            ->preload()
-                            ->searchable(),
-                    ])
-                    ->statePath('data'),
-            ),
+            $this->getNameFormComponent(),
+            $this->getEmailFormComponent(),
+            $this->getPasswordFormComponent(),
+            $this->getPasswordConfirmationFormComponent(),
+
+            Select::make('department_id')
+                ->label('Department')
+                ->relationship('department', 'name')
+                ->required()
+                ->searchable()
+                ->preload(),
         ];
     }
 }
