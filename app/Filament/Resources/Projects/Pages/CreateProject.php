@@ -16,7 +16,7 @@ class CreateProject extends CreateRecord
     {
         // إضافة معرف المستخدم الحالي إلى البيانات قبل الحفظ في القاعدة
         $data['created_by'] = auth()->id();
-
+        $data['department_id'] = auth()->department_id();
         return $data;
     }
 
