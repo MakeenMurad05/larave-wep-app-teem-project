@@ -3,6 +3,8 @@
 namespace App\Filament\Pages\Auth;
 
 // 1. لاحظ هنا: قمنا بتسمية الكلاس الأصلي BaseRegister
+
+use App\Models\Department;
 use Filament\Auth\Pages\Register as BaseRegister;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Model;
@@ -30,12 +32,12 @@ class MyRegister extends BaseRegister
             $this->getPasswordFormComponent(),
             $this->getPasswordConfirmationFormComponent(),
 
-            Select::make('department_id')
-                ->label('Department')
-                ->relationship('department', 'name')
-                ->required()
-                ->searchable()
-                ->preload(),
+Select::make('department_id')
+    ->label('Department')
+    ->options(
+        Department::pluck('name', 'id')->toArray()
+    )
+    ->required(),
         ];
     }
 }
