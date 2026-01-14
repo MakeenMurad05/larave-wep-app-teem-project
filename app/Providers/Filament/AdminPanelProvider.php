@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('Task_Management')
             ->login()
+            ->brandName('Task Management System')
             ->databaseNotifications()
             ->databaseNotificationsPolling('5s')
             ->registration(MyRegister::class)
