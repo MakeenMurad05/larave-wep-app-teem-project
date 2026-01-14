@@ -21,7 +21,7 @@ class ProjectPolicy
 
     public function viewAny(AuthUser $authUser): bool
     {
-        return false;
+        return $authUser->hasAnyRole(['Admin', 'super_admin']);
     }
 
     public function view(AuthUser $authUser, Project $project): bool
