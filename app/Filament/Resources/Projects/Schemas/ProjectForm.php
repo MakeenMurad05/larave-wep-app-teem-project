@@ -51,11 +51,13 @@ class ProjectForm
             ->searchable()
             ->preload()
             ->required()
-            // تبسيط التحقق من الأدوار
+            // 1. استخدم التحقق الآمن باستخدام ?-> لتجنب استدعاء Guard بشكل خاطئ
             ->visible(fn () => auth()->user()?->hasAnyRole(['Admin', 'super_admin']))
             ->disabled(fn () => auth()->user()?->hasRole('Manager'))
-            // استخدام null-safe operator لتجنب الخطأ
-            ->default(fn () => auth()->user()?->department_id),
+            // 2. الوصول للقيمة الافتراضية بشكل صريح من الموديل
+            ->default(function () {
+                return auth()->user()?->department_id;
+            }),
 
 
 
