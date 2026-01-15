@@ -51,7 +51,7 @@ class ProjectResource extends Resource
             return $query;
         }
 
-        if (auth()->user()->hasRole('manager')) {
+        if (auth()->user()->hasRole('Manager')) {
         return $query->where('department_id', auth()->user()->department_id);
         }
 
