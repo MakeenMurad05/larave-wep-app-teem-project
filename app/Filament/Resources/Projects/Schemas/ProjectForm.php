@@ -18,6 +18,15 @@ class ProjectForm
     {
         return $schema->schema([ 
 
+        TextInput::make('title')
+            ->label('Project Title') // غيرنا التسمية هنا لتكون دقيقة
+            ->required()
+            ->maxLength(255),
+
+        Textarea::make('description')
+            ->required()
+            ->columnSpanFull(),
+
         Select::make('status')
             ->options([
                 'planning' => 'Planning',
@@ -29,15 +38,6 @@ class ProjectForm
             ->required()
             ->native(false),
 
-        TextInput::make('title')
-            ->label('Project Title') // غيرنا التسمية هنا لتكون دقيقة
-            ->required()
-            ->maxLength(255),
-
-        Textarea::make('description')
-            ->required()
-            ->columnSpanFull(),
-
         DateTimePicker::make('start_date')
             ->required(),
 
@@ -45,6 +45,17 @@ class ProjectForm
             ->after('start_date')
             ->required(),
 
+        Select::make('department_id')
+            ->label('Department')
+            ->relationship('department', 'name')
+            ->searchable()
+            ->preload()
+            ->required()
+            // تبسيط التحقق من الأدوار
+            ->visible(fn () => auth()->user()?->hasAnyRole(['Admin', 'super_admin']))
+            ->disabled(fn () => auth()->user()?->hasRole('Manager'))
+            // استخدام null-safe operator لتجنب الخطأ
+            ->default(fn () => auth()->user()?->department_id),
 
 
 
