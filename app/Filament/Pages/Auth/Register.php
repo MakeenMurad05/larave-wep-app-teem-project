@@ -33,7 +33,6 @@ class MyRegister extends BaseRegister
             $this->getPasswordFormComponent(),
             $this->getPasswordConfirmationFormComponent(),
             $this->getDepartmentFormComponent(),
-        
         ];
     }
 }
