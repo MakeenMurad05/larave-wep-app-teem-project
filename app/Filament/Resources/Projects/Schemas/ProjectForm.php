@@ -45,10 +45,19 @@ class ProjectForm
             ->after('start_date')
             ->required(),
             
-        // Instead of asking the user to select a department, 
-        // we hide the field and fill it automatically.
+        // Department for Admin (selectable)
+        Select::make('department_id')
+            ->label('Department')
+            ->relationship('department', 'name')
+            ->searchable()
+            ->preload()
+            ->required()
+            ->visible(fn () => auth()->user()->hasRole('Admin')),
+
+        // Department for Manager (auto assigned)
         Hidden::make('department_id')
-            ->default(auth()->user()->department_id),
+            ->default(fn () => auth()->user()->department_id)
+            ->visible(fn () => auth()->user()->hasRole('Manager')),
 
         Hidden::make('created_by')->default(auth()->id()),
             ]);
