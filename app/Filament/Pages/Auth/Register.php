@@ -32,15 +32,8 @@ class MyRegister extends BaseRegister
             $this->getEmailFormComponent(),
             $this->getPasswordFormComponent(),
             $this->getPasswordConfirmationFormComponent(),
-
-                                DateTimePicker::make('ppp')
-            ->required(),
-            Select::make('department_id')
-                ->label('Department')
-                ->options(
-                    \App\Models\Department::pluck('name', 'id')
-                )
-                ->required(),
+            $this->getDepartmentFormComponent(),
+        
         ];
     }
 }
