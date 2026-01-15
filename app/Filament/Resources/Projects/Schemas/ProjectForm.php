@@ -45,19 +45,16 @@ class ProjectForm
             ->after('start_date')
             ->required(),
             
-        // Department for Admin (selectable)
         Select::make('department_id')
             ->label('Department')
             ->relationship('department', 'name')
             ->searchable()
             ->preload()
             ->required()
-            ->visible(fn () => auth()->user()->hasRole('Admin')),
+            ->visible(fn () => auth()->user()->hasAnyRole(['admin', 'super_admin']))
+            ->disabled(fn () => auth()->user()->hasRole('manager'))
+            ->default(fn () => auth()->user()->department_id),
 
-        // Department for Manager (auto assigned)
-        Hidden::make('department_id')
-            ->default(fn () => auth()->user()->department_id)
-            ->visible(fn () => auth()->user()->hasRole('Manager')),
 
         Hidden::make('created_by')->default(auth()->id()),
             ]);
