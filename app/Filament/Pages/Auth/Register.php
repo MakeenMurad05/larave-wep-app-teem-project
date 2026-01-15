@@ -6,6 +6,7 @@ namespace App\Filament\Pages\Auth;
 
 use App\Models\Department;
 use Filament\Auth\Pages\Register as BaseRegister;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,6 +33,8 @@ class MyRegister extends BaseRegister
             $this->getPasswordFormComponent(),
             $this->getPasswordConfirmationFormComponent(),
 
+                                DateTimePicker::make('ppp')
+            ->required(),
             Select::make('department_id')
                 ->label('Department')
                 ->options(
