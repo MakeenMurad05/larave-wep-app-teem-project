@@ -34,7 +34,7 @@ class ProjectPolicy
         if ($authUser->hasRole('Manager')) 
         {
             return $project->created_by === $authUser->id
-                 || $project->creator->hasRole($authUser);
+                || $project->creator->hasRole('Manager');
         }
 
         return false;
