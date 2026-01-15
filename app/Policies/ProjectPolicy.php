@@ -3,8 +3,7 @@
 declare(strict_types=1);
 
 namespace App\Policies;
-
-use Illuminate\Foundation\Auth\User as AuthUser;
+use App\Models\User as AuthUser;
 use App\Models\Project;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
