@@ -45,7 +45,11 @@ class ProjectResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
+        $user = auth()->user();
 
+        if (! $user) {
+        return $query->whereRaw('1=0'); 
+        }
         // الأدمن يرى كل شيء
         if (auth()->user()->hasAnyRole(['Admin', 'super_admin'])) {
             return $query;
