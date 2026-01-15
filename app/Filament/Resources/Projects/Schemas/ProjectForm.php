@@ -44,15 +44,7 @@ class ProjectForm
         DateTimePicker::make('end_date')
             ->after('start_date')
             ->required(),
-        Select::make('department_id')
-            ->label('Department')
-            ->relationship('department', 'name')
-            ->searchable()
-            ->preload()
-            ->required()
-            ->visible(fn () => auth()->check() && auth()->user()->hasAnyRole(['Admin', 'super_admin']))
-            ->disabled(fn () => auth()->check() && auth()->user()->hasRole('Manager'))
-            ->default(fn () => auth()->check() ? auth()->user()->department_id : null),
+
 
 
 
