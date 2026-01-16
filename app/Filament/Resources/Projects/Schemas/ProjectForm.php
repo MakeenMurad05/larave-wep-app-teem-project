@@ -50,8 +50,12 @@ class ProjectForm
             ->searchable()
             ->preload()
             ->required()
-            ->visible(fn () => auth()->user()->hasAnyRole(['admin', 'super_admin']))
-            ->disabled(fn () => auth()->user()->hasRole('manager'))
+            ->visible(fn () => auth()->user()->hasAnyRole(['admin', 'super_admin'])),
+
+            Hidden::make('department_id')
+            ->default(auth()->user()->department_id)
+            // Only use this hidden field if the user is NOT a Super Admin
+            ->visible(fn () => !auth()->user()->hasRole('super_admin'))
             ->default(fn () => auth()->user()->department_id),
 
 
