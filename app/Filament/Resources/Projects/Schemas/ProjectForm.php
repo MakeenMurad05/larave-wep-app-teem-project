@@ -49,7 +49,6 @@ class ProjectForm
                 ->relationship('department', 'name')
                 ->searchable()
                 ->preload()
-                ->required()
                 ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'super_admin'])),
 
             Hidden::make('department_id')
