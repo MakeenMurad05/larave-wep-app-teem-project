@@ -16,50 +16,51 @@ class ProjectForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->schema([ 
+        return $schema->schema([
 
-        Select::make('status')
-            ->options([
-                'planning' => 'Planning',
-                'active' => 'Active',
-                'on_hold' => 'On Hold',
-                'completed' => 'Completed',
-                'archived' => 'Archived',
-            ])
-            ->required()
-            ->native(false),
+            TextInput::make('title')
+                ->label('Project Title') // غيرنا التسمية هنا لتكون دقيقة
+                ->required()
+                ->maxLength(255),
 
-        TextInput::make('title')
-            ->label('Project Title') // غيرنا التسمية هنا لتكون دقيقة
-            ->required()
-            ->maxLength(255),
+            Textarea::make('description')
+                ->required()
+                ->columnSpanFull(),
 
-        Textarea::make('description')
-            ->required()
-            ->columnSpanFull(),
+            Select::make('status')
+                ->options([
+                    'planning' => 'Planning',
+                    'active' => 'Active',
+                    'on_hold' => 'On Hold',
+                    'completed' => 'Completed',
+                    'archived' => 'Archived',
+                ])
+                ->required()
+                ->native(false),
 
-        DateTimePicker::make('start_date')
-            ->required(),
+            DateTimePicker::make('start_date')
+                ->required(),
 
-        DateTimePicker::make('end_date')
-            ->after('start_date')
-            ->required(),
-        Select::make('department_id')
-            ->label('Department')
-            ->relationship('department', 'name')
-            ->searchable()
-            ->preload()
-            ->required()
-            ->visible(fn () => auth()->user()->hasAnyRole(['admin', 'super_admin'])),
+            DateTimePicker::make('end_date')
+                ->after('start_date')
+                ->required(),
+
+            Select::make('department_id')
+                ->label('Department')
+                ->relationship('department', 'name')
+                ->searchable()
+                ->preload()
+                ->required()
+                ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'super_admin'])),
 
             Hidden::make('department_id')
-            ->default(auth()->user()->department_id)
-            // Only use this hidden field if the user is NOT a Super Admin
-            ->visible(fn () => !auth()->user()->hasRole('super_admin'))
-            ->default(fn () => auth()->user()->department_id),
+                ->default(auth()->user()->department_id)
+                // Only use this hidden field if the user is NOT a Super Admin
+                ->visible(fn() => !auth()->user()->hasRole('super_admin'))
+                ->default(fn() => auth()->user()->department_id),
 
 
-        Hidden::make('created_by')->default(auth()->id()),
-            ]);
+            Hidden::make('created_by')->default(auth()->id()),
+        ]);
     }
 }
