@@ -16,35 +16,36 @@ class ProjectForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->schema([ 
+        return $schema->schema([
 
-        TextInput::make('title')
-            ->label('Project Title') // غيرنا التسمية هنا لتكون دقيقة
-            ->required()
-            ->maxLength(255),
+            TextInput::make('title')
+                ->label('Project Title') // غيرنا التسمية هنا لتكون دقيقة
+                ->required()
+                ->maxLength(255),
 
-        Textarea::make('description')
-            ->required()
-            ->columnSpanFull(),
+            Textarea::make('description')
+                ->required()
+                ->columnSpanFull(),
 
-        Select::make('status')
-            ->options([
-                'planning' => 'Planning',
-                'active' => 'Active',
-                'on_hold' => 'On Hold',
-                'completed' => 'Completed',
-                'archived' => 'Archived',
-            ])
-            ->required()
-            ->native(false),
+            Select::make('status')
+                ->options([
+                    'planning' => 'Planning',
+                    'active' => 'Active',
+                    'on_hold' => 'On Hold',
+                    'completed' => 'Completed',
+                    'archived' => 'Archived',
+                ])
+                ->required()
+                ->native(false),
 
-        DateTimePicker::make('start_date')
-            ->required(),
+            DateTimePicker::make('start_date')
+                ->required(),
 
-        DateTimePicker::make('end_date')
-            ->after('start_date')
-            ->required(),
+            DateTimePicker::make('end_date')
+                ->after('start_date')
+                ->required(),
 
+<<<<<<< HEAD
         Select::make('department_id')
             ->label('Department')
             ->relationship('department', 'name')
@@ -56,10 +57,24 @@ class ProjectForm
             ->default(function () {
                 return auth()->user()?->department_id;
             }),
+=======
+            Select::make('department_id')
+                ->label('Department')
+                ->relationship('department', 'name')
+                ->searchable()
+                ->preload()
+                ->required()
+                ->visible(fn() => auth()->user()->hasAnyRole(['admin', 'super_admin'])),
+
+            Hidden::make('department_id')
+                ->default(auth()->user()->department_id)
+                // Only use this hidden field if the user is NOT a Super Admin
+                ->visible(fn() => !auth()->user()->hasRole('super_admin'))
+                ->default(fn() => auth()->user()->department_id),
+>>>>>>> b144543e49c890357f0c2210d760d1a4d80ee3e9
 
 
-
-        Hidden::make('created_by')->default(auth()->id()),
-            ]);
+            Hidden::make('created_by')->default(auth()->id()),
+        ]);
     }
 }

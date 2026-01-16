@@ -8,6 +8,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
 
 
+
 class CreateProject extends CreateRecord
 {
     protected static string $resource = ProjectResource::class;
@@ -16,7 +17,6 @@ class CreateProject extends CreateRecord
     {
         // إضافة معرف المستخدم الحالي إلى البيانات قبل الحفظ في القاعدة
         $data['created_by'] = auth()->id();
-        $data['department_id'] = auth()->department_id();
         return $data;
     }
 
