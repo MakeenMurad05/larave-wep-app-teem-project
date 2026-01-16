@@ -41,7 +41,7 @@ class ProjectPolicy
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->hasAnyRole(['Admin', 'Manager']);
+        return true;
     }
 
     public function update(AuthUser $authUser, Project $project): bool
