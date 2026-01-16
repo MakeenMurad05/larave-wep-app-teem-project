@@ -11,7 +11,6 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
-
 class ProjectForm
 {
     public static function configure(Schema $schema): Schema
@@ -19,7 +18,7 @@ class ProjectForm
         return $schema->schema([
 
             TextInput::make('title')
-                ->label('Project Title') // غيرنا التسمية هنا لتكون دقيقة
+                ->label('Project Title')
                 ->required()
                 ->maxLength(255),
 
@@ -45,19 +44,6 @@ class ProjectForm
                 ->after('start_date')
                 ->required(),
 
-<<<<<<< HEAD
-        Select::make('department_id')
-            ->label('Department')
-            ->relationship('department', 'name')
-            ->searchable()
-            ->preload()
-            ->required()
-            ->visible(fn () => auth()->user()?->hasAnyRole(['Admin', 'super_admin']))
-            ->disabled(fn () => auth()->user()?->hasRole('Manager'))
-            ->default(function () {
-                return auth()->user()?->department_id;
-            }),
-=======
             Select::make('department_id')
                 ->label('Department')
                 ->relationship('department', 'name')
@@ -68,13 +54,11 @@ class ProjectForm
 
             Hidden::make('department_id')
                 ->default(auth()->user()->department_id)
-                // Only use this hidden field if the user is NOT a Super Admin
-                ->visible(fn() => !auth()->user()->hasRole('super_admin'))
-                ->default(fn() => auth()->user()->department_id),
->>>>>>> b144543e49c890357f0c2210d760d1a4d80ee3e9
+                // يظهر فقط إذا لم يكن المشرف سوبر أدمن
+                ->visible(fn() => !auth()->user()->hasRole('super_admin')),
 
-
-            Hidden::make('created_by')->default(auth()->id()),
+            Hidden::make('created_by')
+                ->default(auth()->id()),
         ]);
     }
 }
