@@ -40,8 +40,7 @@ class UserForm
                     ->label('Department')
                     ->relationship('department', 'name') // Connects to Department Model, shows Name
                     ->searchable() // Allows searching if you have many departments
-                    ->preload()    // Loads the list immediately
-                    ->required(),
+                    ->preload(),    // Loads the list immediately
             ]);
     }
 }
