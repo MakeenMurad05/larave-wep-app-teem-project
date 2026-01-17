@@ -3,11 +3,10 @@
 namespace App\Filament\Resources\Tasks\Pages;
 
 use App\Filament\Resources\Tasks\TaskResource;
-use Filament\Actions\Action;
+use Illuminate\Support\Carbon;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
 
-use function Symfony\Component\Clock\now;
 
 class CreateTask extends CreateRecord
 {
@@ -15,7 +14,7 @@ class CreateTask extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['due_date'] = now()->toDateTimeString();
+        $data['due_date'] = Carbon::now()->toDateTimeString();;
         return $data;
     }
 
