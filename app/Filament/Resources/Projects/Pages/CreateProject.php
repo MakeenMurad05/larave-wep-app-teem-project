@@ -15,6 +15,8 @@ class CreateProject extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        $user = auth()->user();
+        
         if (!$user->hasAnyRole(['Admin', 'super_admin'])) 
         {
             $data['department_id'] = $user->department_id;
