@@ -21,7 +21,7 @@ class CreateUser extends CreateRecord
         foreach ($admins as $admin) {
             Notification::make()
                 ->title('New User Started')
-                ->body("User **{$User->title}** created by " . auth()->user()->name)
+                ->body("User **{$User->name}** created by " . auth()->user()->name)
                 ->info()
                 ->sendToDatabase($admin);
         }

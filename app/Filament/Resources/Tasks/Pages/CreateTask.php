@@ -5,8 +5,7 @@ namespace App\Filament\Resources\Tasks\Pages;
 use App\Filament\Resources\Tasks\TaskResource;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
-
-use Notification;
+use Filament\Notifications\Notification;
 
 use function Symfony\Component\Clock\now;
 
@@ -30,7 +29,7 @@ class CreateTask extends CreateRecord
 
         // 3. Send simple notification
         if ($recipient) {
-            \Filament\Notifications\Notification::make()
+            Notification::make()
                 ->title('New Task Assigned')
                 ->body("Task: {$task->title}")
                 ->success()
