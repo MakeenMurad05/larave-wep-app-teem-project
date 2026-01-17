@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Tasks\Pages;
 
 use App\Filament\Resources\Tasks\TaskResource;
+use App\Models\User;
 use Illuminate\Support\Carbon;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
