@@ -25,7 +25,7 @@ class CreateProject extends CreateRecord
         $project = $this->record;
         
         // Send to all Super Admins
-        $admins = User::role('super_admin')->get();
+      /*  $admins = User::role('super_admin')->get();
 
         foreach ($admins as $admin) {
             Notification::make()
@@ -34,5 +34,6 @@ class CreateProject extends CreateRecord
                 ->info()
                 ->sendToDatabase($admin);
         }
+                */
     }
 }
