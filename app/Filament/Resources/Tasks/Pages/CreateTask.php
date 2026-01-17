@@ -3,11 +3,11 @@
 namespace App\Filament\Resources\Tasks\Pages;
 
 use App\Filament\Resources\Tasks\TaskResource;
-use App\Models\User;
-use Illuminate\Support\Carbon;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Notifications\Notification;
 
+use function Symfony\Component\Clock\now;
 
 class CreateTask extends CreateRecord
 {
@@ -15,24 +15,25 @@ class CreateTask extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['due_date'] = Carbon::now()->toDateTimeString();;
+        $data['due_date'] = now()->toDateTimeString();
         return $data;
     }
 
     protected function afterCreate(): void
     {
+        // 1. Get the task
         $task = $this->record;
 
-        if ($task->assigned_to) {
-            $recipient = User::find($task->assigned_to);
+        // 2. Get the user object (using the raw ID)
+        $recipient = \App\Models\User::find($task->assigned_to);
 
-            if ($recipient) {
-                Notification::make()
-                    ->title('New Task Assigned')
-                    ->body("Task: {$task->title}")
-                    ->success()
-                    ->sendToDatabase($recipient);
-            }
+        // 3. Send simple notification
+        if ($recipient) {
+            Notification::make()
+                ->title('New Task Assigned')
+                ->body("Task: {$task->title}")
+                ->success()
+                ->sendToDatabase($recipient); 
         }
     }
 }
