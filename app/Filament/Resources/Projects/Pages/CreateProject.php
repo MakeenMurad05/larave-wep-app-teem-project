@@ -15,6 +15,10 @@ class CreateProject extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
+        if (!$user->hasAnyRole(['Admin', 'super_admin'])) 
+        {
+            $data['department_id'] = $user->department_id;
+        }
         // إضافة معرف المستخدم الحالي إلى البيانات قبل الحفظ في القاعدة
         $data['created_by'] = auth()->id();
         return $data;
