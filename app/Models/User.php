@@ -73,7 +73,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function profile()
     {
-        return $this->hasOne(Profile::class);
+        return $this->hasOne(Profile::class , 'users_id');
     }
 
     public function canAccessPanel(Panel $panel): bool
