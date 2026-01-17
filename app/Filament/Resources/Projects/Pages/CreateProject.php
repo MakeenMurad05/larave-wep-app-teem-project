@@ -23,17 +23,18 @@ class CreateProject extends CreateRecord
     protected function afterCreate(): void
     {
         $project = $this->record;
-        
-        // Send to all Super Admins
-      /*  $admins = User::role('super_admin')->get();
+            
+            // جلب المشرفين (تأكد من وجود مستخدمين بهذا الدور)
+            $admins = User::role('super_admin')->get();
 
-        foreach ($admins as $admin) {
-            Notification::make()
-                ->title('New Project Started')
-                ->body("Project **{$project->title}** created by " . auth()->user()->name)
-                ->info()
-                ->sendToDatabase($admin);
-        }
-                */
+            // نرسل الإشعار فقط إذا وجدنا مشرفين لتجنب الأخطاء
+            if ($admins->count() > 0) {
+                \Filament\Notifications\Notification::make()
+                    ->title('New Project Started')
+                    // استخدمنا ?? للتأكد أنه إذا لم يجد title لا ينهار الكود
+                    ->body("Project **" . ($project->title ?? 'Untitled') . "** created by " . auth()->user()->name)
+                    ->info()
+                    ->sendToDatabase($admins); // أرسل للمجموعة مباشرة دون foreach
+            }
     }
 }
