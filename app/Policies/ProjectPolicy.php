@@ -33,7 +33,7 @@ class ProjectPolicy
 
         if ($authUser->hasRole('Manager')) 
         {
-            return true;
+            return $project->created_by === $authUser->id;
         }
 
         return false;
@@ -41,7 +41,7 @@ class ProjectPolicy
 
     public function create(AuthUser $authUser): bool
     {
-        return true;
+        return $authUser->hasAnyRole(['Manager', 'Admin', 'super_admin']);
     }
 
     public function update(AuthUser $authUser, Project $project): bool
