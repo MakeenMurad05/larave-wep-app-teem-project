@@ -73,9 +73,6 @@ class TaskForm
             Textarea::make('description')
                 ->disabled(fn () => auth()->user()->hasRole('Member')),
 
-            Textarea::make('Comments')
-            ->visible(fn () => auth()->user()->hasRole('Member')),
-
             Select::make('assigned_to')
             ->relationship(
                 name: 'assignedUser',
