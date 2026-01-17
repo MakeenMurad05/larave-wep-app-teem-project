@@ -125,6 +125,14 @@ class TaskForm
                 ])
                 ->addActionLabel('Add File'),
 
+            Textarea::make('comment_text')
+                ->label('Comment')
+                ->required()
+                ->rows(3),
+
+            Hidden::make('user_id')
+                ->default(fn () => auth()->id()),
+
         
 
             Hidden::make('created_by')->default(auth()->id()),
