@@ -44,23 +44,27 @@ class ProjectResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $user = auth()->user();
+            $user = auth()->user();
 
-        if (! $user) {
-        return parent::getEloquentQuery()->whereRaw('1=0');
-        }
+            if (! $user) {
+                return parent::getEloquentQuery()->whereRaw('1=0');
+            }
 
-        $query = parent::getEloquentQuery();
-        // الأدمن يرى كل شيء
-        if (auth()->user()->hasAnyRole(['Admin', 'super_admin'])) {
-            return $query;
-        }
+            $query = parent::getEloquentQuery();
 
-        if (auth()->user()->hasRole('Manager')) {
-            return $query->where('created_by', auth()->id());
-        }
+            if ($user->hasAnyRole(['Admin', 'super_admin'])) {
+                return $query;
+            }
 
-       return $query->where('department_id', $user->department_id);
+            if ($user->hasRole('Manager')) {
+                return $query->where('created_by', $user->id);
+            }
+
+            if ($user->department_id) {
+                return $query->where('department_id', $user->department_id);
+            }
+
+            return $query->whereRaw('1=0');
        
     }
 
