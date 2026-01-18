@@ -48,70 +48,57 @@ class EditProfile extends Page implements HasForms
     public function form(Schema $schema): Schema
     {
         return $schema
-             ->schema([
-                Section::make('My Profile')
-                    ->description('Update your personal details and photo.')
+          ->schema([
+            Section::make('My Profile')
+                ->description('Update your personal details and photo.')
+                ->schema([
+                    Grid::make([
+                        'default' => 1,
+                        'lg' => 3, // تقسيم المساحة: عمود للصورة وعمودين للحقول
+                    ])
                     ->schema([
-                        // Create a Grid with 3 columns total
-                        // 1 column for Photo, 2 columns for Text
-                        Grid::make(3)
+                        
+                        // حقل الصورة - مرتبط بعمود 'photo' في الموديل
+                        FileUpload::make('photo')
+                            ->label('Profile Photo')
+                            ->avatar() // يجعلها دائرية
+                            ->imageEditor()
+                            ->directory('profiles') // اسم المجلد في الـ Storage
+                            ->columnSpan(1),
+
+                        // شبكة الحقول النصية - تأخذ باقي المساحة
+                        Grid::make(2)
+                            ->columnSpan(2)
                             ->schema([
                                 
-                                // --- LEFT COLUMN (1/3 width) ---
-                                Group::make()
-                                    ->columnSpan(1)
-                                    ->schema([
-                                        FileUpload::make('photo')
-                                            ->label('Profile Photo')
-                                            ->avatar() // Makes it circular
-                                            ->imageEditor() // Allows cropping
-                                            ->alignCenter() // Centers it in the column
-                                            ->disk('public') // <--- Add this: Forces it to use the public disk
-                                            ->directory('profile-photos') // Folder name inside storage/app/public/
-                                            ->visibility('public') // <--- Add this: Ensures the file is viewable
-                                            ->columnSpanFull(),
-                                    ]),
+                                TextInput::make('first_name')
+                                    ->label('First name')
+                                    ->required(),
 
-                                // --- RIGHT COLUMN (2/3 width) ---
-                                Group::make()
-                                    ->columnSpan(2)
-                                    ->schema([
-                                        // Row 1: Names
-                                        Grid::make(2)
-                                            ->schema([
-                                                TextInput::make('first_name')
-                                                    ->required()
-                                                    ->maxLength(255),
-                                                
-                                                TextInput::make('last_name')
-                                                    ->required()
-                                                    ->maxLength(255),
-                                            ]),
+                                TextInput::make('last_name')
+                                    ->label('Last name')
+                                    ->required(),
 
-                                        // Row 2: Contact Info
-                                        Grid::make(2)
-                                            ->schema([
-                                                TextInput::make('phone')
-                                                    ->tel()
-                                                    ->required()
-                                                    ->prefixIcon('heroicon-m-phone'),
-                                                
-                                                DatePicker::make('birth_date')
-                                                    ->required()
-                                                    ->maxDate(now())
-                                                    ->prefixIcon('heroicon-m-calendar'),
-                                            ]),
+                                TextInput::make('phone')
+                                    ->label('Phone')
+                                    ->tel()
+                                    ->prefixIcon('heroicon-m-phone')
+                                    ->required(),
 
-                                        // Row 3: Bio
-                                        Textarea::make('bio')
-                                            ->rows(4)
-                                            ->columnSpanFull()
-                                            ->placeholder('Tell us a little about yourself...'),
-                                    ]),
+                                DatePicker::make('birth_date')
+                                    ->label('Birth date')
+                                    ->native(false) // ليظهر بشكل مودرن
+                                    ->displayFormat('m/d/Y')
+                                    ->required(),
+
+                                Textarea::make('bio')
+                                    ->label('Bio')
+                                    ->rows(4)
+                                    ->columnSpanFull(),
                             ]),
                     ]),
-            ])
-            ->statePath('data');
+                ])
+                ]);
     }
 
     public function save(): void
