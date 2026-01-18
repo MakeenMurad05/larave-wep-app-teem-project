@@ -119,6 +119,7 @@ class EditProfile extends Page implements HasForms
         $data = $this->form->getState();
         $user = Auth::user();
 
+        $photoPath = is_array($data['photo']) ? array_values($data['photo'])[0] : $data['photo'];
 
         
        $profile = Profile::updateOrCreate(
@@ -129,7 +130,7 @@ class EditProfile extends Page implements HasForms
             'phone'      => $data['phone'],
             'birth_date' => $data['birth_date'],
             'bio'        => $data['bio'],
-            'photo'      => $data['photo'], // هنا نضع الصورة صراحةً
+            'photo'      => $photoPath, // هنا نضع الصورة صراحةً
         ]
     );
 
