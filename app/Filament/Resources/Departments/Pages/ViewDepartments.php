@@ -6,7 +6,7 @@ use App\Filament\Resources\Departments\DepartmentResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
-class ViewDep extends ViewRecord
+class ViewDepartments extends ViewRecord
 {
     protected static string $resource = DepartmentResource::class;
 

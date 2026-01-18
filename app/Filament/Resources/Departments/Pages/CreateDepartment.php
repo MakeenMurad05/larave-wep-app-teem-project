@@ -7,7 +7,7 @@ use App\Models\User;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreateDep extends CreateRecord
+class CreateDepartment extends CreateRecord
 {
     protected static string $resource = DepartmentResource::class;
 

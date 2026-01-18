@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Filament\Models\Contracts\HasAvatar;
 
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser , HasAvatar
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles , LogsActivity;
@@ -86,10 +86,9 @@ class User extends Authenticatable implements FilamentUser
         $photoPath = $this->profile?->photo;
 
         if ($photoPath) {
-            // 2. Return the custom URL: https://yoursite.com/images/profile-photos/xyz.jpg
-            
+            // Return the full public URL of the image
+            // We specify 'public' disk just to be safe based on your previous settings
             return asset('storage/' . $photoPath);
-
         }
 
         // If no photo, return null (Filament will show the default Initials)

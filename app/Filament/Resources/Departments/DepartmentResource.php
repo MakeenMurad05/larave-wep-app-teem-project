@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\Departments;
 
-use App\Filament\Resources\Departments\Pages\CreateDep;
-use App\Filament\Resources\Departments\Pages\EditDep;
-use App\Filament\Resources\Departments\Pages\ListDeps;
-use App\Filament\Resources\Departments\Pages\ViewDep;
+use App\Filament\Resources\Departments\Pages\CreateDepartment ;
+use App\Filament\Resources\Departments\Pages\EditDepartment;
+use App\Filament\Resources\Departments\Pages\ListDepartments;
+use App\Filament\Resources\Departments\Pages\ViewDepartments;
 use App\Filament\Resources\Departments\Schemas\DepartmentForm;
 use App\Filament\Resources\Departments\Schemas\DepartmentInfolist;
 // أضف هذا السطر مع بقية الـ use في الأعلى
@@ -54,10 +54,10 @@ class DepartmentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListDeps::route('/'),
-            'create' => CreateDep::route('/create'),
-            'view' => ViewDep::route('/{record}'),
-            'edit' => EditDep::route('/{record}/edit'),
+            'index' => ListDepartments::route('/'),
+            'create' => CreateDepartment ::route('/create'),
+            'view' => ViewDepartments::route('/{record}'),
+            'edit' => EditDepartment::route('/{record}/edit'),
         ];
     }
 }
