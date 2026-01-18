@@ -34,6 +34,21 @@ class CreateTask extends CreateRecord
                 ->body("Task: {$task->title}")
                 ->success()
                 ->sendToDatabase($recipient); 
+
+                                try {
+            \Illuminate\Support\Facades\Mail::raw(
+                "تم إنشاء مهة جديدة في النظام.\n\n" .
+                "المهمة: {$task->title}\n" .
+                "بواسطة: " . auth()->user()->name,
+                function ($message) use ($admin) {
+                    $message->to($admin->email)
+                            ->subject('تنبيه: مهمة جديدة - ' . config('app.name'));
+                }
+            );
+        } catch (\Exception $e) {
+            // في حال فشل الإيميل، سيستمر الكود ولن ينهار الموقع
+            report($e);
+        }
         }
     }
 }
