@@ -145,6 +145,8 @@ class TasksRelationManager extends RelationManager
                 CreateAction::make()
                 ->mutateFormDataUsing(function (array $data): array {
                             // إذا كانت المصفوفة موجودة، نقوم بفلترتها
+                            $data['due_date'] = now()->toDateTimeString();
+                            
                             if (!empty($data['attachments'])) {
                                 $data['attachments'] = array_filter($data['attachments'], function ($attachment) {
                                     // لا نسمح بمرور السجل إلا إذا كان ملف_بث يحتوي على قيمة (أي تم رفع ملف فعلي)
