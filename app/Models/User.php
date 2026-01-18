@@ -83,11 +83,18 @@ class User extends Authenticatable implements FilamentUser , HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
+        // Get the photo path from the related profile
+        // We use "?->" so it doesn't crash if the user has no profile yet
         $photoPath = $this->profile?->photo;
 
-        return $photoPath 
-            ? Storage::url($photoPath) 
-            : null;
+        if ($photoPath) {
+            // Return the full public URL of the image
+            // We specify 'public' disk just to be safe based on your previous settings
+            return asset('storage/' . $photoPath);
+        }
+
+        // If no photo, return null (Filament will show the default Initials)
+        return null;
     }
 
     public function canAccessPanel(Panel $panel): bool
