@@ -23,7 +23,8 @@ class CreateUser extends CreateRecord
                 ->title('New User Started')
                 ->body("User **{$User->name}** created by " . auth()->user()->name)
                 ->info()
-                ->sendToDatabase($admin);
+                ->sendToDatabase($admin)
+                ->sendToMail($admin);
         }
     }
 }
