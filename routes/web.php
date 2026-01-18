@@ -9,6 +9,12 @@ Route::get('/', function () {
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/test-mail', function () {
-    dd(config('filesystems.disks.public.root'));
-
+    try {
+        Mail::raw('تجرية إرسال إيميل من الموقع', function ($message) {
+            $message->to('almutjul5011211@gmail.com')->subject('اختبار Laravel');
+        });
+        return "تم إرسال الإيميل بنجاح!";
+    } catch (\Exception $e) {
+        return "فشل الإرسال: " . $e->getMessage();
+    }
 });

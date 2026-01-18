@@ -116,7 +116,6 @@ class EditProfile extends Page implements HasForms
 
     public function save(): void
     {
-        dd(config('filesystems.disks.public.root'));
         $data = $this->form->getState();
         $user = Auth::user();
 
