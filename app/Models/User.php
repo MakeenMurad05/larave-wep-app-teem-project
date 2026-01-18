@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Filament\Models\Contracts\HasAvatar;
 
 
-class User extends Authenticatable implements FilamentUser , HasAvatar
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles , LogsActivity;
@@ -87,9 +87,9 @@ class User extends Authenticatable implements FilamentUser , HasAvatar
 
         if ($photoPath) {
             // 2. Return the custom URL: https://yoursite.com/images/profile-photos/xyz.jpg
-            // return asset('storage/' . $photoPath);
+            
+            return asset('storage/' . $photoPath);
 
-            return url('images/' . $photoPath);
         }
 
         // If no photo, return null (Filament will show the default Initials)
