@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Filament\Models\Contracts\HasAvatar;
 
 
-class User extends Authenticatable implements FilamentUser , HasAvatar
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles , LogsActivity;
@@ -79,21 +79,7 @@ class User extends Authenticatable implements FilamentUser , HasAvatar
         return $this->hasOne(Profile::class , 'users_id');
     }
 
-    public function getFilamentAvatarUrl(): ?string
-    {
-        // Get the photo path from the related profile
-        // We use "?->" so it doesn't crash if the user has no profile yet
-        $photoPath = $this->profile?->photo;
 
-        if ($photoPath) {
-            // Return the full public URL of the image
-            // We specify 'public' disk just to be safe based on your previous settings
-            return asset('storage/' . $photoPath);
-        }
-
-        // If no photo, return null (Filament will show the default Initials)
-        return null;
-    }
 
     public function canAccessPanel(Panel $panel): bool
     {

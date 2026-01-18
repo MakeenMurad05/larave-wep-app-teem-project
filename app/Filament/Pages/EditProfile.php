@@ -69,6 +69,7 @@ class EditProfile extends Page implements HasForms
                                             ->disk('public') // <--- Add this: Forces it to use the public disk
                                             ->directory('profile-photos') // Folder name inside storage/app/public/
                                             ->visibility('public') // <--- Add this: Ensures the file is viewable
+                                            ->preserveFilenames()
                                             ->columnSpanFull(),
                                     ]),
 
@@ -118,7 +119,6 @@ class EditProfile extends Page implements HasForms
     {
         $data = $this->form->getState();
         $user = Auth::user();
-dd(config('filesystems.disks.public.root'));
 
         $photoPath = is_array($data['photo']) ? array_values($data['photo'])[0] : $data['photo'];
 
