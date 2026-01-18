@@ -46,37 +46,33 @@ class UsersTable
             ->recordActions([
                 EditAction::make(),
                 ViewAction::make()
-                ->form([
-                    
-                // القسم الأول: معلومات الحساب الأساسية
-                Section::make('Account Information')
-                    ->schema([
-                        \Filament\Forms\Components\TextInput::make('name'),
-                        \Filament\Forms\Components\TextInput::make('email'),
-                        \Filament\Forms\Components\TextInput::make('user_type'),
-                    ])->columns(2),
+->form([
+        // معلومات الحساب (من جدول users)
+        Section::make('Account Information')
+            ->schema([
+                \Filament\Forms\Components\TextInput::make('name'),
+                \Filament\Forms\Components\TextInput::make('email'),
+                \Filament\Forms\Components\TextInput::make('user_type'),
+            ])->columns(2),
 
-                // القسم الثاني: معلومات البروفايل المرتبطة
-                Section::make('Profile Details')
-                    ->schema([
-                        \Filament\Forms\Components\FileUpload::make('profile.photo')
-                            ->label('Profile Photo')
-                            ->avatar()
-                            ->disk('public'), // تأكد من استخدام نفس القرص
+        // معلومات البروفايل (باستخدام دالة relationship)
+        Section::make('Profile Details')
+            ->relationship('profile') // اسم الدالة الموجودة في موديل User
+            ->schema([
+                \Filament\Forms\Components\FileUpload::make('photo') // نكتب 'photo' مباشرة بدون كلمة 'profile.'
+                    ->label('Profile Photo')
+                    ->avatar()
+                    ->disk('public')
+                    ->formatStateUsing(fn ($state) => is_string($state) ? [$state] : $state),
 
                 Group::make([
-                    \Filament\Forms\Components\TextInput::make('profile.first_name')
-                        ->label('First Name'),
-                    \Filament\Forms\Components\TextInput::make('profile.last_name')
-                        ->label('Last Name'),
-                    \Filament\Forms\Components\TextInput::make('profile.phone')
-                        ->label('Phone Number'),
-                    \Filament\Forms\Components\DatePicker::make('profile.birth_date')
-                        ->label('Birth Date'),
+                    \Filament\Forms\Components\TextInput::make('first_name'), // نكتب اسم العمود مباشرة
+                    \Filament\Forms\Components\TextInput::make('last_name'),
+                    \Filament\Forms\Components\TextInput::make('phone'),
+                    \Filament\Forms\Components\DatePicker::make('birth_date'),
                 ])->columns(2),
 
-                \Filament\Forms\Components\Textarea::make('profile.bio')
-                    ->label('Bio')
+                \Filament\Forms\Components\Textarea::make('bio')
                     ->columnSpanFull(),
             ])
     ]),
