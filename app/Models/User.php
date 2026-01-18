@@ -11,13 +11,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-use Filament\Models\Contracts\HasAvatar; // تأكد من استيراد الواجهة
-use Illuminate\Support\Facades\Storage;
-
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles , LogsActivity;
@@ -58,18 +55,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             'password' => 'hashed',
             'is_active' => 'boolean',
         ];
-    }
-
-    public function getFilamentAvatarUrl(): ?string
-    {
-        // نتحقق أولاً من وجود علاقة بروفايل وصورة شخصية
-        if ($this->profile && $this->profile->photo) {
-            // نستخدم التخزين العام (public disk) لجلب الرابط
-            return Storage::disk('public')->url($this->profile->photo);
-        }
-
-        // في حال عدم وجود صورة، سيعود للشكل الافتراضي (أول حرف من الاسم)
-        return null;
     }
 
     public function getActivitylogOptions(): LogOptions
