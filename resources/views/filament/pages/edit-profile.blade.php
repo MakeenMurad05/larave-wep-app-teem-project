@@ -9,8 +9,7 @@
             We also added a red border to make sure you can see this box.
         -->
         <div style="margin-top: 50px;padding: 20px;">
-            <p>Current Path: {{ $data['photo'] ?? 'No Path' }}</p>
-<p>Full URL: {{ \Illuminate\Support\Facades\Storage::disk('public')->url($data['photo'] ?? '') }}</p>
+            
 
             <div class="flex justify-start gap-x-4">
                 <x-filament::button type="submit">
