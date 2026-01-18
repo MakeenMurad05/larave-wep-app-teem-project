@@ -16,7 +16,7 @@ class CreateUser extends CreateRecord
         $User = $this->record;
         
         // Send to all Super Admins
-        $admins = User::role('super_admin')->get();
+        $admins = User::role('Admin')->get();
 
         foreach ($admins as $admin) {
             Notification::make()
