@@ -69,6 +69,7 @@ class EditProfile extends Page implements HasForms
                                             ->disk('public') // <--- Add this: Forces it to use the public disk
                                             ->directory('profile-photos') // Folder name inside storage/app/public/
                                             ->visibility('public') // <--- Add this: Ensures the file is viewable
+                                            ->preserveFilenames()
                                             ->columnSpanFull(),
                                     ]),
 
