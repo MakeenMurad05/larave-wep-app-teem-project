@@ -64,7 +64,7 @@ class EditProfile extends Page implements HasForms
                             ->avatar() // يجعلها دائرية
                             ->imageEditor()
                             ->directory('profiles') // اسم المجلد في الـ Storage
-                            ->columnSpan(1),
+                            ->columnSpan(5),
 
                         // شبكة الحقول النصية - تأخذ باقي المساحة
                         Grid::make(2)
