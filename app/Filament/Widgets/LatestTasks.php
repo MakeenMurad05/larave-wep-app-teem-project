@@ -12,6 +12,9 @@ use Filament\Tables\Columns\TextColumn;
 class LatestTasks extends TableWidget
 {
     protected static ?int $sort = 10;
+
+    protected int | string | array $columnSpan = 'full'; 
+
     public function table(Table $table): Table
     {
         return $table

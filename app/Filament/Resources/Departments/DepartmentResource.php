@@ -25,8 +25,7 @@ class DepartmentResource extends Resource
     protected static ?string $pluralModelLabel = 'Departments'; // اسم الجمع
     protected static ?string $slug = 'departments'; // الرابط في المتصفح
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema
