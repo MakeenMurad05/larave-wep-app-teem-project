@@ -19,12 +19,12 @@ class CreateUser extends CreateRecord
         $admins = User::role('super_admin')->get();
 
         foreach ($admins as $admin) {
-            Notification::make()
+            $notification = Notification::make()
                 ->title('New User Started')
                 ->body("User **{$User->name}** created by " . auth()->user()->name)
-                ->info()
-                ->sendToDatabase($admin)
-                ->sendToMail($admin);
+                ->info();
+                $notification->sendToDatabase($admin);
+                $admin->notify($notification->toIlluminateNotification());
         }
     }
 }
