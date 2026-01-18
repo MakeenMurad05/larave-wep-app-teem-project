@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserResource extends Resource
 {
@@ -51,6 +52,12 @@ class UserResource extends Resource
     public static function canViewAny(): bool
     {
         return auth()->user()->hasAnyRole(['super_admin', 'Admin']);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        // هذا السطر يخبر فليمنت أن يجلب بيانات البروفايل مع كل يوزر تلقائياً
+        return parent::getEloquentQuery()->with('profile');
     }
 
 }
