@@ -118,7 +118,10 @@ class EditProfile extends Page implements HasForms
     {
         $data = $this->form->getState();
         $user = Auth::user();
-
+dd(
+    config('filesystems.default'),
+    config('filesystems.disks.public.root')
+);
         $photoPath = is_array($data['photo']) ? array_values($data['photo'])[0] : $data['photo'];
 
         
