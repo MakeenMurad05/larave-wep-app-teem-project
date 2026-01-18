@@ -79,6 +79,7 @@ class User extends Authenticatable implements FilamentUser , HasAvatar
         return $this->hasOne(Profile::class , 'users_id');
     }
 
+
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() !== 'admin')
