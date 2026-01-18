@@ -29,6 +29,11 @@ class EditProfile extends Page implements HasForms
 
     public ?array $data = [];
 
+    protected function getFormStatePath(): string
+    {
+        return 'data';
+    }
+
     public function mount(): void
     {
         // specific to the logged-in user
@@ -62,15 +67,17 @@ class EditProfile extends Page implements HasForms
                                 Group::make()
                                     ->columnSpan(1)
                                     ->schema([
-                                        FileUpload::make('photo')
-                                            ->label('Profile Photo')
-                                            ->avatar() // Makes it circular
-                                            ->imageEditor() // Allows cropping
-                                            ->alignCenter() // Centers it in the column
-                                            ->disk('public') // <--- Add this: Forces it to use the public disk
-                                            ->directory('profile-photos') // Folder name inside storage/app/public/
-                                            ->visibility('public') // <--- Add this: Ensures the file is viewable
-                                            ->columnSpanFull(),
+FileUpload::make('photo')
+    ->label('Profile Photo')
+    ->image() // استخدام image بدلاً من avatar للتجربة
+    ->disk('public')
+    ->directory('profile-photos')
+    ->imagePreviewHeight('250')
+    ->loadingIndicatorPosition('left')
+    ->panelLayout('integrated')
+    ->removeUploadedFileButtonPosition('right')
+    ->uploadButtonPosition('left')
+    ->uploadProgressIndicatorPosition('left'),
                                     ]),
 
                                 // --- RIGHT COLUMN (2/3 width) ---
