@@ -86,9 +86,10 @@ class User extends Authenticatable implements FilamentUser , HasAvatar
         $photoPath = $this->profile?->photo;
 
         if ($photoPath) {
-            // Return the full public URL of the image
-            // We specify 'public' disk just to be safe based on your previous settings
-        return url('media/' . $photoPath);
+            // 2. Return the custom URL: https://yoursite.com/images/profile-photos/xyz.jpg
+            // return asset('storage/' . $photoPath);
+
+            return url('images/' . $photoPath);
         }
 
         // If no photo, return null (Filament will show the default Initials)
