@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Filament\Models\Contracts\HasAvatar;
 
 
-class User extends Authenticatable implements FilamentUser , HasAvatar
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles , LogsActivity;
