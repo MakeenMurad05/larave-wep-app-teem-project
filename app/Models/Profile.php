@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
-    protected $table = 'profiles';
+    protected $table = 'profile';
+    
 
     protected $fillable = [
         'users_id',
@@ -20,6 +21,6 @@ class Profile extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class , 'users_id');
     }
 }
