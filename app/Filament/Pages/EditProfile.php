@@ -38,6 +38,7 @@ class EditProfile extends Page implements HasForms
         $profile = $user->profile; 
 
         if ($profile) {
+            $this->data = $profile->toArray();
             $this->form->fill($profile->attributesToArray());
         } else {
             // Fill mostly empty, but you could pre-fill email if needed
