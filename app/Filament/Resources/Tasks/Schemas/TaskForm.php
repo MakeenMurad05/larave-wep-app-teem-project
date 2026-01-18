@@ -35,7 +35,7 @@ class TaskForm
                     'completed' => 'Completed',
                 ])
                 ->required()
-                ->visible(fn () => !auth()->user()->hasRole('Member')),
+                ->visible(fn () => auth()->user()->hasRole('Member')),
 
             Select::make('project_id')
                 ->relationship(
