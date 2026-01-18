@@ -31,21 +31,18 @@ class EditProfile extends Page implements HasForms
 
     public function mount(): void
     {
-        $user = auth()->user();
-            $profile = $user->profile; 
+        // specific to the logged-in user
+        $user = Auth::user();
+        
+        // Get existing profile or create empty array
+        $profile = $user->profile; 
 
-            if ($profile) {
-                $data = $profile->attributesToArray();
-                
-                // إذا كانت الصورة نصاً، حولها لمصفوفة ليقبلها الحقل بدون خطأ
-                if (isset($data['photo']) && is_string($data['photo'])) {
-                    $data['photo'] = [$data['photo']];
-                }
-                
-                $this->form->fill($data);
-            } else {
-                $this->form->fill([]);
-            }
+        if ($profile) {
+            $this->form->fill($profile->attributesToArray());
+        } else {
+            // Fill mostly empty, but you could pre-fill email if needed
+            $this->form->fill([]);
+        }
     }
 
     public function form(Schema $schema): Schema
@@ -72,7 +69,6 @@ class EditProfile extends Page implements HasForms
                                             ->disk('public') // <--- Add this: Forces it to use the public disk
                                             ->directory('profile-photos') // Folder name inside storage/app/public/
                                             ->visibility('public') // <--- Add this: Ensures the file is viewable
-                                            ->multiple(false)
                                             ->columnSpanFull(),
                                     ]),
 
@@ -120,29 +116,26 @@ class EditProfile extends Page implements HasForms
 
     public function save(): void
     {
-    $data = $this->form->getState();
-    $user = auth()->user();
+        $data = $this->form->getState();
+        $user = Auth::user();
 
-    // استخراج أول مسار من المصفوفة لتخزينه كنص في القاعدة
-    if (isset($data['photo']) && is_array($data['photo'])) {
-        $data['photo'] = array_key_first($data['photo']) !== null ? reset($data['photo']) : null;
-    }
 
-    $profile = \App\Models\Profile::updateOrCreate(
-        ['users_id' => $user->id],
+        
+       $profile = Profile::updateOrCreate(
+        ['users_id' => $user->id], // شرط البحث (ابحث عن هذا اليوزر)
         [
             'first_name' => $data['first_name'],
             'last_name'  => $data['last_name'],
             'phone'      => $data['phone'],
             'birth_date' => $data['birth_date'],
             'bio'        => $data['bio'],
-            'photo'      => $data['photo'], // الآن هو string وليس array
+            'photo'      => $data['photo'], // هنا نضع الصورة صراحةً
         ]
     );
 
-    Notification::make()
-        ->success()
-        ->title('Profile saved successfully')
-        ->send();
+        Notification::make()
+            ->success()
+            ->title('Profile saved successfully')
+            ->send();
     }
 }
