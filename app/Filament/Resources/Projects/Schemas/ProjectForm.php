@@ -38,7 +38,8 @@ class ProjectForm
                 ->native(false),
 
             DateTimePicker::make('start_date')
-                ->required(),
+                ->required()
+                ->default(now()),
 
             DateTimePicker::make('end_date')
                 ->after('start_date')
