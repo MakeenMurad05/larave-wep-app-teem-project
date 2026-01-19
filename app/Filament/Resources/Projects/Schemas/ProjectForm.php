@@ -39,7 +39,7 @@ class ProjectForm
 
             DateTimePicker::make('start_date')
                 ->required()
-                ->default(now()),
+                ->default(fn () => now()),
 
             DateTimePicker::make('end_date')
                 ->after('start_date')
