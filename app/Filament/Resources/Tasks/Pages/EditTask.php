@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Tasks\Pages;
 
 use App\Filament\Resources\Tasks\TaskResource;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
@@ -46,7 +47,7 @@ class EditTask extends EditRecord
                     ->body("**{$task->assignedUser->name}** finished task: {$task->title}")
                     ->success()
                     ->actions([
-                        \Filament\Notifications\Actions\Action::make('view')
+                        Action::make('view')
                             ->button()
                             ->url(TaskResource::getUrl('edit', ['record' => $task->id])),
                     ])
